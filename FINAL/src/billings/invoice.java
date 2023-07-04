@@ -1,5 +1,7 @@
 
 package billings;
+
+import java.util.concurrent.TimeUnit;
 import SMS.sms_p1rww;
 import clients.User;
 import javax.swing.table.DefaultTableModel;
@@ -621,7 +623,10 @@ private void activityCreateBillIncrement() {
     private void myButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_myButton3ActionPerformed
                 receipt r = new receipt();
                 r.setVisible(true);
-    
+                
+                
+                
+//                r.dispose();
     }//GEN-LAST:event_myButton3ActionPerformed
 
     private void myButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_myButton2ActionPerformed
@@ -635,6 +640,7 @@ try {
     if (confirmed == JOptionPane.YES_OPTION) {
         while (rs.next()) {
             int clientId = rs.getInt("id");
+            String client_id = rs.getString("code");
             String clientName = rs.getString("code") + " - " + rs.getString("firstname") + " " + rs.getString("lastname");
 
             // Check if the client has three or more unpaid bills
@@ -665,6 +671,8 @@ try {
                 Date dueDate = calendar.getTime();
 
                 // Insert the new bill into the billing_list table
+                
+//                client_id
                 query = "INSERT INTO billing_list (client_id, bill_date, pay_date, due_date, amount, status) VALUES (?, ?, ?, ?, ?,?)";
                 PreparedStatement pst = con.prepareStatement(query);
                 pst.setInt(1, clientId);

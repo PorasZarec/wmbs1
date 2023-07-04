@@ -5,6 +5,7 @@
  */
 package billings;
 
+import java.util.concurrent.TimeUnit;
 import SMS.sms_p1rww;
 import clients.client;
 import java.awt.Color;
@@ -18,6 +19,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.DateFormat;
+
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -39,6 +41,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import javax.swing.table.TableModel;
 import com.toedter.calendar.JMonthChooser;
+import com.toedter.calendar.JDayChooser;
 import disconnect.dis;
 
 
@@ -282,7 +285,7 @@ private void activityPayBillIncrement() {
         myButton2 = new button.MyButton();
         cname = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
-        JMonthChooser = new com.toedter.calendar.JMonthChooser();
+        dateChooser = new com.toedter.calendar.JDateChooser();
         color1 = new javax.swing.JPanel();
         jLabel5 = new javax.swing.JLabel();
         jLabel15 = new javax.swing.JLabel();
@@ -365,8 +368,6 @@ private void activityPayBillIncrement() {
             }
         });
 
-        JMonthChooser.setFont(new java.awt.Font("SansSerif", 0, 18)); // NOI18N
-
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -381,19 +382,20 @@ private void activityPayBillIncrement() {
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(cname)
                                     .addGroup(jPanel1Layout.createSequentialGroup()
-                                        .addComponent(JMonthChooser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(18, 18, 18)
+                                        .addGap(41, 41, 41)
+                                        .addComponent(dateChooser, javax.swing.GroupLayout.PREFERRED_SIZE, 267, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                         .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))))
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addGap(31, 31, 31)
                                 .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 337, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(0, 600, Short.MAX_VALUE))
+                        .addGap(0, 467, Short.MAX_VALUE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addContainerGap()
                         .addComponent(jScrollPane1)))
                 .addContainerGap())
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
+                .addGap(0, 426, Short.MAX_VALUE)
                 .addComponent(myButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(378, 378, 378))
         );
@@ -404,10 +406,13 @@ private void activityPayBillIncrement() {
                 .addComponent(jLabel4)
                 .addGap(19, 19, 19)
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(26, 26, 26)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(JMonthChooser, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(22, 22, 22)
+                        .addComponent(dateChooser, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(18, 18, 18)
+                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 408, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
@@ -435,7 +440,7 @@ private void activityPayBillIncrement() {
 
         jLabel19.setBackground(java.awt.Color.lightGray);
         jLabel19.setFont(new java.awt.Font("Bahnschrift", 0, 24)); // NOI18N
-        jLabel19.setText("Bill History");
+        jLabel19.setText("Bill History              >");
         jLabel19.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jLabel19MouseClicked(evt);
@@ -444,7 +449,7 @@ private void activityPayBillIncrement() {
 
         jLabel18.setBackground(java.awt.Color.lightGray);
         jLabel18.setFont(new java.awt.Font("Bahnschrift", 0, 24)); // NOI18N
-        jLabel18.setText("Invoice");
+        jLabel18.setText("Invoice                     >");
         jLabel18.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jLabel18MouseClicked(evt);
@@ -462,7 +467,7 @@ private void activityPayBillIncrement() {
 
         jLabel21.setBackground(java.awt.Color.lightGray);
         jLabel21.setFont(new java.awt.Font("Bahnschrift", 0, 24)); // NOI18N
-        jLabel21.setText("SMS");
+        jLabel21.setText("SMS                         >");
         jLabel21.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jLabel21MouseClicked(evt);
@@ -476,7 +481,7 @@ private void activityPayBillIncrement() {
 
         jLabel16.setBackground(new java.awt.Color(0, 0, 0));
         jLabel16.setFont(new java.awt.Font("Bahnschrift", 0, 24)); // NOI18N
-        jLabel16.setText("Bill Payments          >");
+        jLabel16.setText("Payment                   >");
         jLabel16.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jLabel16MouseClicked(evt);
@@ -501,7 +506,7 @@ private void activityPayBillIncrement() {
 
         dash1.setBackground(java.awt.Color.lightGray);
         dash1.setFont(new java.awt.Font("Bahnschrift", 0, 24)); // NOI18N
-        dash1.setText("Dashboard");
+        dash1.setText("Dashboard          ");
         dash1.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 dash1MouseClicked(evt);
@@ -576,101 +581,120 @@ private void activityPayBillIncrement() {
     }// </editor-fold>//GEN-END:initComponents
 
     private void myButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_myButton2ActionPerformed
-int rowIndex = jTable1.getSelectedRow();
-if (rowIndex < 0) {
-JOptionPane.showMessageDialog(this, "Please select a row.");
-return;
-}
-
-int billId = (int) jTable1.getValueAt(rowIndex, jTable1.getColumnModel().getColumnIndex("ID"));
-
-double billAmount = (double) jTable1.getValueAt(rowIndex, jTable1.getColumnModel().getColumnIndex("Amount"));
-
-double rAmount = Double.parseDouble(JOptionPane.showInputDialog("Enter amount to pay:"));
-
-if (rAmount < billAmount) {
-JOptionPane.showMessageDialog(this, "Payment amount must be at least " + billAmount);
-return;
-}else if (rAmount > billAmount) {
-JOptionPane.showMessageDialog(this, "Payment exceeds the bill amount " + billAmount);
-return;
-}
 
 
-// get current date
-DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-Date paymentDate = new Date();
+        int rowIndex = jTable1.getSelectedRow();
+        
+        if (rowIndex < 0) {
+            JOptionPane.showMessageDialog(this, "Please select a row.");
+            return;
+        }
 
-try {
-Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/wbill_db", "root", "");
-String sql = "INSERT INTO payments (bill_id, r_amount, payment_date) VALUES (?, ?, ?)";
-PreparedStatement stmt = con.prepareStatement(sql);
-stmt.setInt(1, billId);
-stmt.setDouble(2, rAmount);
-stmt.setString(3, dateFormat.format(paymentDate));
-stmt.executeUpdate();
-// update status to paid in billing list
-sql = "UPDATE billing_list SET status = 'Paid' WHERE id = ?";
-stmt = con.prepareStatement(sql);
-stmt.setInt(1, billId);
-stmt.executeUpdate();
-// delete row in bill payment table
-DefaultTableModel tblModel = (DefaultTableModel)jTable1.getModel();
-tblModel.removeRow(rowIndex);
+        int billId = (int) jTable1.getValueAt(rowIndex, jTable1.getColumnModel().getColumnIndex("ID"));
 
-// admin activity
-activityPayBillIncrement();
+        double billAmount = (double) jTable1.getValueAt(rowIndex, jTable1.getColumnModel().getColumnIndex("Amount"));
 
-JOptionPane.showMessageDialog(this, "Payment successful.");
-} catch (SQLException ex) {
-JOptionPane.showMessageDialog(this, "Error: " + ex.getMessage());
-}
+        double rAmount = Double.parseDouble(JOptionPane.showInputDialog("Enter amount to pay:"));
 
+        if (rAmount < 0) {
+            
+            JOptionPane.showMessageDialog(this, "Payment amount must be at least " + billAmount);
+            
+            return;
+            
+        } else if (rAmount >180){
+        
+            JOptionPane.showMessageDialog(this, "Payment amount must be at least " + billAmount);
+            
+            return;
+        }
+
+
+        // get current date
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Date paymentDate = new Date();
+
+        try {
+        Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/wbill_db", "root", "");
+        String sql = "INSERT INTO payments (bill_id, r_amount, payment_date) VALUES (?, ?, ?)";
+        PreparedStatement stmt = con.prepareStatement(sql);
+        stmt.setInt(1, billId);
+        stmt.setDouble(2, rAmount);
+        stmt.setString(3, dateFormat.format(paymentDate));
+        stmt.executeUpdate();
+        // update status to paid in billing list
+        sql = "UPDATE billing_list SET status = 'Paid' WHERE id = ?";
+        stmt = con.prepareStatement(sql);
+        stmt.setInt(1, billId);
+        stmt.executeUpdate();
+        // delete row in bill payment table
+        DefaultTableModel tblModel = (DefaultTableModel)jTable1.getModel();
+        tblModel.removeRow(rowIndex);
+
+        // admin activity
+        activityPayBillIncrement();
+
+        JOptionPane.showMessageDialog(this, "Payment successful.");
+        } catch (SQLException ex) {
+        JOptionPane.showMessageDialog(this, "Error: " + ex.getMessage());
+        }       
     }//GEN-LAST:event_myButton2ActionPerformed
 
     private void jLabel1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel1MouseClicked
-int selectedMonth = JMonthChooser.getMonth() + 1; // add 1 since January is month 0
+        try {
+            Connection con = DriverManager.getConnection("jdbc:mysql://localhost/wbill_db", "root", "");
+            String query = "SELECT b.id, CONCAT(c.code, ' - ', c.firstname, ' ', c.lastname) AS client_name, b.bill_date, b.pay_date, b.amount, b.status "
+                    + "FROM billing_list b "
+                    + "INNER JOIN client_list c ON b.client_id = c.id "
+                    + "WHERE MONTH(b.bill_date) = ? AND b.status = 'Unpaid'";
+            PreparedStatement pst = con.prepareStatement(query);
 
-try {
-    Connection con = DriverManager.getConnection("jdbc:mysql://localhost/wbill_db", "root", "");
-    String query = "SELECT b.id, CONCAT(c.code, ' - ', c.firstname, ' ', c.lastname) AS client_name, b.bill_date, b.due_date, b.amount, b.status "
-            + "FROM billing_list b "
-            + "INNER JOIN client_list c ON b.client_id = c.id "
-            + "WHERE MONTH(b.bill_date) = ? AND b.status = 'Unpaid'";
-    PreparedStatement pst = con.prepareStatement(query);
-    pst.setInt(1, selectedMonth);
-    ResultSet rs = pst.executeQuery();
+            // Retrieve the selected date when the JLabel is clicked
+            Date selectedDate = dateChooser.getDate();
 
-    // Save the current column widths
-    int[] columnWidths = new int[jTable1.getColumnCount()];
-    for (int i = 0; i < jTable1.getColumnCount(); i++) {
-        columnWidths[i] = jTable1.getColumnModel().getColumn(i).getWidth();
-    }
+            // Check if a date is selected
+            if (selectedDate != null) {
+                // Set the selected month as a parameter
+                Calendar cal = Calendar.getInstance();
+                cal.setTime(selectedDate);
+                int selectedMonth = cal.get(Calendar.MONTH) + 1;
+                pst.setInt(1, selectedMonth);
 
-    DefaultTableModel model = new DefaultTableModel(new String[]{"ID", "Client Name", "Bill Date", "Due Date", "Amount", "Status"}, 0);
+                ResultSet rs = pst.executeQuery();
 
-    while (rs.next()) {
-        int id = rs.getInt("id");
-        String client_name = rs.getString("client_name");
-        Date bill_date = rs.getDate("bill_date");
-        Date due_date = rs.getDate("due_date");
-        double amount = rs.getDouble("amount");
-        String status = rs.getString("status");
-        model.addRow(new Object[]{id, client_name, bill_date, due_date, amount, status});
-    }
+                // Save the current column widths
+                int[] columnWidths = new int[jTable1.getColumnCount()];
+                for (int i = 0; i < jTable1.getColumnCount(); i++) {
+                    columnWidths[i] = jTable1.getColumnModel().getColumn(i).getWidth();
+                }
 
-    jTable1.setModel(model);
+                DefaultTableModel model = new DefaultTableModel(new String[]{"ID", "Client Name", "Bill Date", "Due Date", "Amount", "Status"}, 0);
 
-    // Set the saved column widths
-    for (int i = 0; i < jTable1.getColumnCount(); i++) {
-        jTable1.getColumnModel().getColumn(i).setPreferredWidth(columnWidths[i]);
-    }
+                while (rs.next()) {
+                    int id = rs.getInt("id");
+                    String client_name = rs.getString("client_name");
+                    Date bill_date = rs.getDate("bill_date");
+                    Date due_date = rs.getDate("pay_date");
+                    double amount = rs.getDouble("amount");
+                    String status = rs.getString("status");
+                    model.addRow(new Object[]{id, client_name, bill_date, due_date, amount, status});
+                }
 
-    con.close();
-} catch (SQLException ex) {
-    Logger.getLogger(bhistory.class.getName()).log(Level.SEVERE, null, ex);
-}
+                jTable1.setModel(model);
 
+                // Set the saved column widths
+                for (int i = 0; i < jTable1.getColumnCount(); i++) {
+                    jTable1.getColumnModel().getColumn(i).setPreferredWidth(columnWidths[i]);
+                }
+
+                con.close();
+            } else {
+                // Handle case when no date is selected
+                System.out.println("No date selected");
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(bhistory.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_jLabel1MouseClicked
 
     private void jLabel15MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel15MouseClicked
@@ -751,11 +775,11 @@ try {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private com.toedter.calendar.JMonthChooser JMonthChooser;
     private javax.swing.JLabel cname;
     private javax.swing.JPanel color1;
     private javax.swing.JLabel dash;
     private javax.swing.JLabel dash1;
+    private com.toedter.calendar.JDateChooser dateChooser;
     private javax.swing.JLabel datetime;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel15;

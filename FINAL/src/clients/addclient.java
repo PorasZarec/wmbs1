@@ -132,7 +132,6 @@ private void activityClientIncrement() {
 
 
 
-
 private void uploadClientList(){
     
     try {
@@ -161,77 +160,6 @@ private void uploadClientList(){
     } catch (SQLException ex) {
         
         Logger.getLogger(addclient.class.getName()).log(Level.SEVERE, null, ex);
-        
-    }
-}
-
-
-private void checkPort(){
-    
-    // Getting the phone number and setting the credentials
-    out = port.getOutputStream();
-    String data = "";
-    String name = "";
-
-    name = first.getText();
-    data = num.getText();
-    
-    String endline = "NO LINE ENDING";
-    
-    try {
-        out.write(data.getBytes());
-        
-        // Prompt user for successful recipient number set
-        JOptionPane.showMessageDialog(this, "Recipient number set successfully.", "Success", JOptionPane.INFORMATION_MESSAGE); 
-        
-    } catch (IOException e) {
-        // Display error dialog with the exception message
-        JOptionPane.showMessageDialog(this, "Error: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE); 
-        
-    }
-
-    // Retrieve the current month using SimpleDateFormat
-    
-    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
-    String month = dateFormat.format(new Date());
-     
-     String message = "Magandang Araw, "+name+".\n" +
-        "\n" +
-        "	\n" +
-        "	Malugod naming ipinaaabot sa inyo ang aming mainit na pagbati!\n" +
-        "ang inyong account number ay " + uniqueClientCode + ".\n" +
-        "Ang billings ay pina-paalala namin tuwing 10th ng buwan samantala naman \n" +
-        "ang  pagbabayad ay tuwing ikaw 15th at 18th ng buwan. Paalala upang hindi\n" +
-        "masuspende ang inyong water service, pina-paalala namin na magbayad bago ang \n" +
-        "itinakdang araw ng pagbabayad.\n" +
-        "\n" +
-        "Kung mayroon po kayong mga katanungan o mga hiling, huwag po kayong \n" +
-        "mag-atubiling makipag-ugnayan sa aming tanggapan. Handa po kaming tumugon at \n" +
-        "magbigay ng tulong sa anumang oras. Maraming salamat po!";
-    
-    if (message.isEmpty()) {
-        JOptionPane.showMessageDialog(this, "Please enter a message.", "Error", JOptionPane.ERROR_MESSAGE);
-    } else {
-        try {
-            // Write the message to the serial port
-            port.getOutputStream().write(message.getBytes());
-
-            JOptionPane.showMessageDialog(this, "Message Sent!");
-            
-        } catch (Exception ex) {
-            
-            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-            
-        }
-    } try {
-        
-        out.write(message.getBytes());
-        
-        JOptionPane.showMessageDialog(this, "Message Sent");
-        
-    } catch (IOException e) {
-        
-        JOptionPane.showMessageDialog(this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         
     }
 }
@@ -467,16 +395,6 @@ private void checkPort(){
                     JOptionPane.showMessageDialog(this, "Invalid input: name should not contain numbers");
                     
                 } else {
-                    
-                    if (port == null || !port.isOpen()) {
-                        
-                        JOptionPane.showMessageDialog(this, "Port is not connected.", "Error", JOptionPane.ERROR_MESSAGE);
-                        
-                    } else {
-                        
-                       checkPort();
-                       
-                    }
                     
                     uploadClientList();
                 }

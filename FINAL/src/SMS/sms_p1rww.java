@@ -37,34 +37,35 @@ public class sms_p1rww extends javax.swing.JFrame {
     Connection con;
     PreparedStatement pst;
     ResultSet rs;
-    private JButton sendButton;
+    String message;
 
     public sms_p1rww() {
         initComponents();
-
+        
         endline.setSelectedItem("NO LINE ENDING");
-        com.setSelectedItem("COM9"); //insert the actual port of the devuce
+        com.setSelectedItem("");
 
         Timer timer = new Timer(0, (ActionEvent e) -> {
             SimpleDateFormat dateFormat = new SimpleDateFormat("dd / MM / yyyy HH:mm:ss");
-            jLabel1.setText(dateFormat.format(new java.util.Date()));
-
-          
-
+            date_year.setText(dateFormat.format(new java.util.Date()));
+            
+            SimpleDateFormat monthandyear = new SimpleDateFormat("MMMM yyyy");
+            String month_year = monthandyear.format(new Date());
+            date_year.setText(month_year);
         });
 
         // Start the timer
         timer.start();
-
+        
         // Initialize the serial port
-        port = SerialPort.getCommPort("COM9"); // Replace with the desired port index
+        port = SerialPort.getCommPort(""); // Replace with the desired port index
         port.openPort();
         port.addDataListener(new SerialPortDataListener() {
             @Override
             public int getListeningEvents() {
                 return SerialPort.LISTENING_EVENT_DATA_AVAILABLE;
             }
-
+            
             @Override
             public void serialEvent(SerialPortEvent event) {
                 if (event.getEventType() == SerialPort.LISTENING_EVENT_DATA_AVAILABLE) {
@@ -73,11 +74,13 @@ public class sms_p1rww extends javax.swing.JFrame {
                     String receivedData = new String(buffer, 0, numRead);
                     // Process the received data
                     processReceivedData(receivedData);
+                    
+                    
                 }
+                
             }
+            
         });
-
-        sendButton = sms_pa; 
 
         jComboBox1.addActionListener(new ActionListener() {
             @Override
@@ -86,19 +89,19 @@ public class sms_p1rww extends javax.swing.JFrame {
                 String selectedOption = (String) jComboBox1.getSelectedItem();
 
                 if (selectedOption.equals("ANNOUNCEMENT")){
-                    sendButton.setEnabled(true);
-                    textfield.setText("");
+                    btn_send.setEnabled(true);
+                    textfield.setText(" ");
                     
                 } else if (selectedOption.equals("DISCONNECTION NOTICE")){
-                    sendButton.setEnabled(true);
+                    btn_send.setEnabled(true);
                     cb_Disconnection();
                     
                 } else if (selectedOption.equals("DUE DATE REMINDER")){
-                    sendButton.setEnabled(true);
+                    btn_send.setEnabled(true);
                     cb_DueDate();
                 
                 } else if (selectedOption.equals("FOR NEWLY ADDED CLIENTS")){
-                    sendButton.setEnabled(true);
+                    btn_send.setEnabled(true);
                     cb_GreetingAddClient();
                     
                 }
@@ -108,121 +111,86 @@ public class sms_p1rww extends javax.swing.JFrame {
     }
     
     private void cb_GreetingAddClient(){
-        if (idsearch.getText().isEmpty()) {
-            JOptionPane.showMessageDialog(new JFrame(), "The ID field cannot be left blank.", "Error", JOptionPane.ERROR_MESSAGE);
-        } else {
-            try {
-                ResultSet rs;
-                PreparedStatement pst = con.prepareStatement("SELECT c.firstname, c.code, b.amount FROM client_list c LEFT JOIN billing_list b ON c.id = b.client_id WHERE c.id = ?;");
-                pst.setString(1, idsearch.getText());
-                rs = pst.executeQuery();
+        
+        try {
+            ResultSet rs;
+            PreparedStatement pst = con.prepareStatement("SELECT c.firstname, c.code, b.amount FROM client_list c LEFT JOIN billing_list b ON c.id = b.client_id WHERE c.id = ?;");
+            pst.setString(1, idsearch.getText());
+            rs = pst.executeQuery();
 
-                if (rs.next()) {
-                    String name = rs.getString("firstname");
-                    String code = rs.getString("code");
-                    String amount = rs.getString("amount");
+            if (rs.next()) {
+                String name = rs.getString("firstname");
+                String code = rs.getString("code");
+                String amount = rs.getString("amount");
 
-                    // Retrieve the current date using SimpleDateFormat
-                    SimpleDateFormat dateFormat = new SimpleDateFormat("MMMM");
-                    String month = dateFormat.format(new Date());
+                // Retrieve the current date using SimpleDateFormat
+                SimpleDateFormat dateFormat = new SimpleDateFormat("MMMM");
+                String month = dateFormat.format(new Date());
 
-                    String message = "Magandang Araw, " + name + "!\n\n" +
-                                "Malugod naming ipinaaabot sa inyo ang aming mainit na pagbati! /n/n" + "\r\r" +
-                                "Ang inyong account number ay " + code + ". Ang billings ay pina-paalala namin tuwing 10th ng buwan, \n\n" +
-                                "samantala naman ang pagbabayad ay tuwing ika-15 at ika-18 ng buwan. Paalala upang hindi \n\n" +
-                                "masuspende ang inyong water service, pina-paalala namin na magbayad bago ang " +
-                                "itinakdang araw ng pagbabayad." + "\r\r" +
-                                "Kung mayroon po kayong mga katanungan o mga hiling, huwag po kayong " +
-                                "mag-atubiling makipag-ugnayan sa aming tanggapan. Handa po kaming tumugon at " +
-                                "magbigay ng tulong sa anumang oras. Maraming salamat po!";
-                            
-                    textfield.setText(message); // Set the message to the text field
-                } else {
-                    JOptionPane.showMessageDialog(new JFrame(), "Client not found in the database.", "Error", JOptionPane.ERROR_MESSAGE);
-                }
-            } catch (SQLException ex) {
-                Logger.getLogger(sms_p1rww.class.getName()).log(Level.SEVERE, null, ex);
-                System.out.println("Failed to retrieve data from the database.");
+                message = "Magandang Araw, " + name + "! \r\r" +
+                            "Malugod naming ipinaaabot sa inyo ang aming mainit na pagbati! \r\r Ang inyong account number ay " + code + ". Ang billings ay pina-paalala namin tuwing 10th ng buwan, samantala naman ang pagbabayad ay tuwing ika-15 at ika-18 ng buwan. Paalala upang hindi masuspende ang inyong water service, pina-paalala namin na magbayad bago ang itinakdang araw ng pagbabayad. Kung mayroon po kayong mga katanungan o mga hiling, huwag po kayong mag-atubiling makipag-ugnayan sa aming tanggapan. Handa po kaming tumugon at magbigay ng tulong sa anumang oras.\r\r Maraming salamat po!";
+                textfield.setText(message); // Set the message to the text field
             }
+        } catch (SQLException ex) {
+            Logger.getLogger(sms_p1rww.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println("Failed to retrieve data from the database.");
         }
     }
     
     private void cb_DueDate(){
         
-        if (idsearch.getText().isEmpty()) {
-            JOptionPane.showMessageDialog(new JFrame(), "The ID field cannot be left blank.", "Error", JOptionPane.ERROR_MESSAGE);
-        } else {
-            try {
-                ResultSet rs;
-                PreparedStatement pst = con.prepareStatement("SELECT c.firstname, c.code, b.amount FROM client_list c LEFT JOIN billing_list b ON c.id = b.client_id WHERE c.id = ?;");
-                pst.setString(1, idsearch.getText());
-                rs = pst.executeQuery();
+        try {
+            ResultSet rs;
+            PreparedStatement pst = con.prepareStatement("SELECT c.firstname, c.code, b.amount FROM client_list c LEFT JOIN billing_list b ON c.id = b.client_id WHERE c.id = ?;");
+            pst.setString(1, idsearch.getText());
+            rs = pst.executeQuery();
 
-                if (rs.next()) {
-                    String name = rs.getString("firstname");
-                    String code = rs.getString("code");
-                    String amount = rs.getString("amount");
+            if (rs.next()) {
+                String name = rs.getString("firstname");
+                String code = rs.getString("code");
+                String amount = rs.getString("amount");
 
-                    // Retrieve the current date using SimpleDateFormat
-                    SimpleDateFormat dateFormat = new SimpleDateFormat("MMMM");
-                    String month = dateFormat.format(new Date());
+                // Retrieve the current date using SimpleDateFormat
+                SimpleDateFormat dateFormat = new SimpleDateFormat("MMMM");
+                String month = dateFormat.format(new Date());
 
-                    String message = "Magandang Araw, " + name + "!\n\n" +
-                                     "Good Day, This is to inform you that your current bill for this month of " + month + "\n\n" + " is " + amount + " pesos. Kindly settle it on or before " + month + " 18. Thank you." + "\r\r";
+                message = "Magandang Araw, " + name + "! \r\r" +
+                                 "Good Day, This is to inform you that your current bill for this month of " + month  + " is " + amount + " pesos. Kindly settle it on or before " + month + " 18. Thank you." + "\r\r";
 
-                    textfield.setText(message); // Set the message to the text field
-                } else {
-                    JOptionPane.showMessageDialog(new JFrame(), "Client not found in the database.", "Error", JOptionPane.ERROR_MESSAGE);
-                }
-            } catch (SQLException ex) {
-                Logger.getLogger(sms_p1rww.class.getName()).log(Level.SEVERE, null, ex);
-                System.out.println("Failed to retrieve data from the database.");
+                textfield.setText(message); // Set the message to the text field
             }
+        } catch (SQLException ex) {
+            Logger.getLogger(sms_p1rww.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println("Failed to retrieve data from the database.");
         }
     }
 
     private void cb_Disconnection(){
-        
-        if (idsearch.getText().isEmpty()) {
             
-            JOptionPane.showMessageDialog(new JFrame(), "The ID field cannot be left blank.", "Error", JOptionPane.ERROR_MESSAGE);
-            
-        } else {
-            
-            try {
-                ResultSet rs;
-                PreparedStatement pst = con.prepareStatement("SELECT c.firstname, c.code, b.amount FROM client_list c LEFT JOIN billing_list b ON c.id = b.client_id WHERE c.id = ?;");
-                pst.setString(1, idsearch.getText());
-                rs = pst.executeQuery();
+        try {
+            ResultSet rs;
+            PreparedStatement pst = con.prepareStatement("SELECT c.firstname, c.code, b.amount FROM client_list c LEFT JOIN billing_list b ON c.id = b.client_id WHERE c.id = ?;");
+            pst.setString(1, idsearch.getText());
+            rs = pst.executeQuery();
 
-                if (rs.next()) {
-                    String name = rs.getString("firstname");
-                    String code = rs.getString("code");
-                    String amount = rs.getString("amount");
+            if (rs.next()) {
+                String name = rs.getString("firstname");
+                String code = rs.getString("code");
+                String amount = rs.getString("amount");
 
-                    // Retrieve the current date using SimpleDateFormat
-                    SimpleDateFormat dateFormat = new SimpleDateFormat("MMMM");
-                    String currentDate = dateFormat.format(new Date());
+                // Retrieve the current date using SimpleDateFormat
+                SimpleDateFormat dateFormat = new SimpleDateFormat("MMMM");
+                String month = dateFormat.format(new Date());
 
-                    String message = "Magandang Araw, " + name + "!\n\n" +
-                            "Ang inyong tubig ay pansamantala naming sinuspendido sa kadahilanang \n\n" +
-                            "may natitira ka pang P" + amount + " sa inyong account " + code + ". Upang maiwasan ang \n\n" +
-                            "ganitong situwasyon ay pinapayuhan namin kayo na magbayad bago ang petsa ng " + currentDate + ". \n\n" +
-                            "Mangyaring magbayad sa pinakamalapit na payment center sa inyong lugar. \n\n" +
-                            "Maraming salamat.\n\n";
-
-                    textfield.setText(message); // Set the message to the text field
-                    
-                } else {
-                    JOptionPane.showMessageDialog(new JFrame(), "Client not found in the database.", "Error", JOptionPane.ERROR_MESSAGE);
-                }
-            } catch (SQLException ex) {
-                Logger.getLogger(sms_p1rww.class.getName()).log(Level.SEVERE, null, ex);
-                System.out.println("Failed to retrieve data from the database.");
+                message = "Magandang Araw, " + name + "! \r\r" +
+                                "Ang inyong tubig ay pansamantala naming sinuspendido sa kadahilanang may natitira ka pang P" + amount + " sa inyong account " + code + ". Upang maiwasan ang ganitong situwasyon ay pinapayuhan namin kayo na magbayad bago ang petsa ng " + month + ". Mangyaring magbayad sa pinakamalapit na payment center sa inyong lugar. \r\r" + "Maraming salamat.";
+                textfield.setText(message); // Set the message to the text field
             }
+        } catch (SQLException ex) {
+            Logger.getLogger(sms_p1rww.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println("Failed to retrieve data from the database.");
         }
-    
-    
+        
     }
     
     private boolean isConnected = false;
@@ -285,6 +253,8 @@ private void activityClientIncrement() {
      * WARNING: Do NOT modify this code. The content of this method is always
      * regenerated by the Form Editor.
      */
+
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -294,8 +264,8 @@ private void activityClientIncrement() {
         jScrollPane1 = new javax.swing.JScrollPane();
         textfield = new javax.swing.JTextArea();
         com = new javax.swing.JComboBox<>();
+        date_year = new javax.swing.JLabel();
         endline = new javax.swing.JComboBox<>();
-        jLabel1 = new javax.swing.JLabel();
         label3 = new javax.swing.JLabel();
         label2 = new javax.swing.JLabel();
         num = new javax.swing.JLabel();
@@ -304,21 +274,19 @@ private void activityClientIncrement() {
         search = new javax.swing.JButton();
         cnum = new javax.swing.JTextField();
         setcnum = new javax.swing.JButton();
-        send = new javax.swing.JButton();
+        btn_send = new javax.swing.JButton();
         conn = new javax.swing.JButton();
         sms_pa = new javax.swing.JButton();
-        jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
         name = new javax.swing.JLabel();
         code = new javax.swing.JLabel();
         bal = new javax.swing.JLabel();
         clear = new javax.swing.JButton();
         all_con = new javax.swing.JButton();
         jLabel15 = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
         jComboBox1 = new javax.swing.JComboBox<>();
+        jPanel1 = new javax.swing.JPanel();
         color3 = new javax.swing.JPanel();
         jLabel16 = new javax.swing.JLabel();
         jLabel33 = new javax.swing.JLabel();
@@ -348,9 +316,10 @@ private void activityClientIncrement() {
         textfield.setBackground(java.awt.SystemColor.control);
         textfield.setColumns(20);
         textfield.setRows(5);
+        textfield.setMaximumSize(new java.awt.Dimension(10, 10));
         jScrollPane1.setViewportView(textfield);
 
-        jPanel2.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, 440, 280));
+        jPanel2.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 50, 440, 320));
 
         com.setForeground(new java.awt.Color(255, 255, 255));
         com.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "COM9", "\t\t\t\t\t\t\t\t\t\t" }));
@@ -371,6 +340,9 @@ private void activityClientIncrement() {
         });
         jPanel2.add(com, new org.netbeans.lib.awtextra.AbsoluteConstraints(550, 450, 130, 30));
 
+        date_year.setText("Year_Current_time");
+        jPanel2.add(date_year, new org.netbeans.lib.awtextra.AbsoluteConstraints(570, 610, 161, -1));
+
         endline.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "NO LINE ENDING", "NEW LINE ", " " }));
         endline.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -378,9 +350,6 @@ private void activityClientIncrement() {
             }
         });
         jPanel2.add(endline, new org.netbeans.lib.awtextra.AbsoluteConstraints(550, 490, 130, 34));
-
-        jLabel1.setText("Year_Current_time");
-        jPanel2.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(570, 610, 161, -1));
 
         label3.setText("Customer Code");
         jPanel2.add(label3, new org.netbeans.lib.awtextra.AbsoluteConstraints(490, 190, -1, -1));
@@ -412,21 +381,21 @@ private void activityClientIncrement() {
         });
         jPanel2.add(cnum, new org.netbeans.lib.awtextra.AbsoluteConstraints(480, 300, 210, 30));
 
-        setcnum.setText("Set Customer Contact Number");
+        setcnum.setText("Set Client's Contact Number");
         setcnum.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 setcnumActionPerformed(evt);
             }
         });
-        jPanel2.add(setcnum, new org.netbeans.lib.awtextra.AbsoluteConstraints(490, 340, -1, -1));
+        jPanel2.add(setcnum, new org.netbeans.lib.awtextra.AbsoluteConstraints(510, 340, -1, -1));
 
-        send.setText("Send");
-        send.addActionListener(new java.awt.event.ActionListener() {
+        btn_send.setText("Send");
+        btn_send.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                sendActionPerformed(evt);
+                btn_sendActionPerformed(evt);
             }
         });
-        jPanel2.add(send, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 590, 80, 40));
+        jPanel2.add(btn_send, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 590, 80, 40));
 
         conn.setText("Connect");
         conn.addActionListener(new java.awt.event.ActionListener() {
@@ -444,11 +413,11 @@ private void activityClientIncrement() {
         });
         jPanel2.add(sms_pa, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 590, 190, 40));
 
-        jLabel2.setText("END LINE");
-        jPanel2.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(470, 500, -1, -1));
-
         jLabel3.setText("COM");
         jPanel2.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(470, 460, -1, -1));
+
+        jLabel2.setText("END LINE");
+        jPanel2.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(470, 500, -1, -1));
 
         name.setText("******************");
         jPanel2.add(name, new org.netbeans.lib.awtextra.AbsoluteConstraints(600, 160, -1, -1));
@@ -478,30 +447,6 @@ private void activityClientIncrement() {
         jLabel15.setText("TYPE OF MESSAGE:");
         jPanel2.add(jLabel15, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 520, -1, -1));
 
-        jButton1.setText("DISCONNECTION");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
-            }
-        });
-        jPanel2.add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 300, -1, -1));
-
-        jButton2.setText("DUE DATE");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
-            }
-        });
-        jPanel2.add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 300, -1, -1));
-
-        jButton3.setText("GREETINGS ADD CLIENT");
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
-            }
-        });
-        jPanel2.add(jButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 300, -1, -1));
-
         jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "ANNOUNCEMENT", "DISCONNECTION NOTICE", "DUE DATE REMINDER", "FOR NEWLY ADDED CLIENTS" }));
         jComboBox1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -509,6 +454,19 @@ private void activityClientIncrement() {
             }
         });
         jPanel2.add(jComboBox1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 550, 210, -1));
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 220, Short.MAX_VALUE)
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 140, Short.MAX_VALUE)
+        );
+
+        jPanel2.add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(480, 140, 220, 140));
 
         color3.setBackground(new java.awt.Color(51, 204, 255));
 
@@ -720,7 +678,6 @@ private void activityClientIncrement() {
 }}
      }
 
-
     }//GEN-LAST:event_searchActionPerformed
 
     private void cnumActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cnumActionPerformed
@@ -734,12 +691,9 @@ private void activityClientIncrement() {
 
         data = cnum.getText();
 
-//        switch (endline.getSelectedIndex()) {
-//            case 0 -> data = cnum.getText();
-//            case 1 -> data = cnum.getText() + "\n";
-//            case 2 -> data = cnum.getText() + "\r";
-//            case 3 -> data = cnum.getText() + "\r\n";
-        //}
+        switch (endline.getSelectedIndex()) {
+            case 0 -> data = cnum.getText();
+        }
 
         if (data.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Error: No contact number entered.", "Error", JOptionPane.ERROR_MESSAGE);
@@ -753,15 +707,13 @@ private void activityClientIncrement() {
         }
     }//GEN-LAST:event_setcnumActionPerformed
     
-    private void sendActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sendActionPerformed
+    private void btn_sendActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_sendActionPerformed
 
     if (idsearch.getText().isEmpty()) {
             JOptionPane.showMessageDialog(new JFrame(), "The ID field cannot be left blank.", "Error", JOptionPane.ERROR_MESSAGE);
         } else {
                     
             out = port.getOutputStream();
-            String selectedOption = (String) jComboBox1.getSelectedItem();
-            String message;
             
                 // Default message if no specific option is selected
                 message = textfield.getText();
@@ -781,7 +733,7 @@ private void activityClientIncrement() {
                 
             }
         }
-    }//GEN-LAST:event_sendActionPerformed
+    }//GEN-LAST:event_btn_sendActionPerformed
 
     private void connActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_connActionPerformed
         if (isConnected) {
@@ -819,10 +771,10 @@ private void activityClientIncrement() {
                 JOptionPane.showMessageDialog(this, "Please enter a message.", "Error", JOptionPane.ERROR_MESSAGE);
             } else {
                 try {
-                        // Write the message to the serial port
-                        port.getOutputStream().write(message.getBytes());
+                    // Write the message to the serial port
+                    port.getOutputStream().write(message.getBytes());
 
-                        JOptionPane.showMessageDialog(this, "Message Sent!");
+                    JOptionPane.showMessageDialog(this, "Message Sent!");
                 } catch (Exception ex) {
                     JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                 }
@@ -832,7 +784,7 @@ private void activityClientIncrement() {
 
     private void clearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearActionPerformed
         if (cnum.getText().isEmpty()) {
-             JOptionPane.showMessageDialog(this, "Please set the recipient number first.", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Please set the recipient number first.", "Error", JOptionPane.ERROR_MESSAGE);
         } else {
             if (port != null && port.isOpen()) {
                 try {
@@ -851,34 +803,34 @@ private void activityClientIncrement() {
 
     private void all_conActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_all_conActionPerformed
     if (port == null || !port.isOpen()) {
-    JOptionPane.showMessageDialog(this, "Port is not connected.", "Error", JOptionPane.ERROR_MESSAGE);
-} else {
-    try {
-        StringBuilder contactNumbers = new StringBuilder(); // Store all contact numbers
+        JOptionPane.showMessageDialog(this, "Port is not connected.", "Error", JOptionPane.ERROR_MESSAGE);
+    } else {
+            try {
+                StringBuilder contactNumbers = new StringBuilder(); // Store all contact numbers
 
-        // Retrieve all contact numbers from the database
-        String query = "SELECT contact FROM client_list";
-        Statement statement = con.createStatement();
-        ResultSet resultSet = statement.executeQuery(query);
+                // Retrieve all contact numbers from the database
+                String query = "SELECT contact FROM client_list";
+                Statement statement = con.createStatement();
+                ResultSet resultSet = statement.executeQuery(query);
 
-        while (resultSet.next()) {
-            String contact = resultSet.getString("contact");
-            contactNumbers.append(contact).append(", "); // Append each contact number with a comma and space
+                while (resultSet.next()) {
+                    String contact = resultSet.getString("contact");
+                    contactNumbers.append(contact).append(", "); // Append each contact number with a comma and space
+                }
+
+                // Remove the last comma and space
+                if (contactNumbers.length() > 0) {
+                    contactNumbers.setLength(contactNumbers.length() - 2);
+                }
+
+                    // Set the contact numbers to the cnum text field
+                    cnum.setText(contactNumbers.toString());
+
+                    JOptionPane.showMessageDialog(this, "Contact numbers retrieved successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(this, "Error: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }
         }
-
-        // Remove the last comma and space
-        if (contactNumbers.length() > 0) {
-            contactNumbers.setLength(contactNumbers.length() - 2);
-        }
-
-        // Set the contact numbers to the cnum text field
-        cnum.setText(contactNumbers.toString());
-
-        JOptionPane.showMessageDialog(this, "Contact numbers retrieved successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
-    } catch (Exception ex) {
-        JOptionPane.showMessageDialog(this, "Error: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-    }
-}
     }//GEN-LAST:event_all_conActionPerformed
 
     private void jLabel33MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel33MouseClicked
@@ -921,123 +873,6 @@ private void activityClientIncrement() {
         b.show();
         dispose();        // TODO add your handling code here:
     }//GEN-LAST:event_jLabel38MouseClicked
-
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-
-        if (idsearch.getText().isEmpty()) {
-            
-            JOptionPane.showMessageDialog(new JFrame(), "The ID field cannot be left blank.", "Error", JOptionPane.ERROR_MESSAGE);
-            
-        } else {
-            
-            try {
-                ResultSet rs;
-                PreparedStatement pst = con.prepareStatement("SELECT c.firstname, c.code, b.amount FROM client_list c LEFT JOIN billing_list b ON c.id = b.client_id WHERE c.id = ?;");
-                pst.setString(1, idsearch.getText());
-                rs = pst.executeQuery();
-
-                if (rs.next()) {
-                    String name = rs.getString("firstname");
-                    String code = rs.getString("code");
-                    String amount = rs.getString("amount");
-
-                    // Retrieve the current date using SimpleDateFormat
-                    SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMMM yyyy");
-                    String currentDate = dateFormat.format(new Date());
-
-                    String message = "Magandang Araw, " + name + "!\n\n" +
-                            "Ang inyong tubig ay pansamantala naming sinuspendido sa kadahilanang \n\n" +
-                            "may natitira ka pang P" + amount + " sa inyong account " + code + ". Upang maiwasan ang \n\n" +
-                            "ganitong situwasyon ay pinapayuhan namin kayo na magbayad bago ang petsa ng " + currentDate + ". \n\n" +
-                            "Mangyaring magbayad sa pinakamalapit na payment center sa inyong lugar. \n\n" +
-                            "Maraming salamat.\n\n";
-
-                    textfield.setText(message); // Set the message to the text field
-                    
-                } else {
-                    JOptionPane.showMessageDialog(new JFrame(), "Client not found in the database.", "Error", JOptionPane.ERROR_MESSAGE);
-                }
-            } catch (SQLException ex) {
-                Logger.getLogger(sms_p1rww.class.getName()).log(Level.SEVERE, null, ex);
-                System.out.println("Failed to retrieve data from the database.");
-            }
-        }
-    
-    
-    }//GEN-LAST:event_jButton1ActionPerformed
-
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-     if (idsearch.getText().isEmpty()) {
-            JOptionPane.showMessageDialog(new JFrame(), "The ID field cannot be left blank.", "Error", JOptionPane.ERROR_MESSAGE);
-        } else {
-            try {
-                ResultSet rs;
-                PreparedStatement pst = con.prepareStatement("SELECT c.firstname, c.code, b.amount FROM client_list c LEFT JOIN billing_list b ON c.id = b.client_id WHERE c.id = ?;");
-                pst.setString(1, idsearch.getText());
-                rs = pst.executeQuery();
-
-                if (rs.next()) {
-                    String name = rs.getString("firstname");
-                    String code = rs.getString("code");
-                    String amount = rs.getString("amount");
-
-                    // Retrieve the current date using SimpleDateFormat
-                    SimpleDateFormat dateFormat = new SimpleDateFormat("MMMM");
-                    String month = dateFormat.format(new Date());
-
-                    String message = "Magandang Araw, " + name + "!\n\n" +
-                                     "Good Day, This is to inform you that your current bill for this month of " + month + "\n\n" + " is " + amount + " pesos. Kindly settle it on or before " + month + "18. Thank you." + "\r\r";
-
-                    textfield.setText(message); // Set the message to the text field
-                } else {
-                    JOptionPane.showMessageDialog(new JFrame(), "Client not found in the database.", "Error", JOptionPane.ERROR_MESSAGE);
-                }
-            } catch (SQLException ex) {
-                Logger.getLogger(sms_p1rww.class.getName()).log(Level.SEVERE, null, ex);
-                System.out.println("Failed to retrieve data from the database.");
-            }
-        }
-    }//GEN-LAST:event_jButton2ActionPerformed
-
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        if (idsearch.getText().isEmpty()) {
-            JOptionPane.showMessageDialog(new JFrame(), "The ID field cannot be left blank.", "Error", JOptionPane.ERROR_MESSAGE);
-        } else {
-            try {
-                ResultSet rs;
-                PreparedStatement pst = con.prepareStatement("SELECT c.firstname, c.code, b.amount FROM client_list c LEFT JOIN billing_list b ON c.id = b.client_id WHERE c.id = ?;");
-                pst.setString(1, idsearch.getText());
-                rs = pst.executeQuery();
-
-                if (rs.next()) {
-                    String name = rs.getString("firstname");
-                    String code = rs.getString("code");
-                    String amount = rs.getString("amount");
-
-                    // Retrieve the current date using SimpleDateFormat
-                    SimpleDateFormat dateFormat = new SimpleDateFormat("MMMM");
-                    String month = dateFormat.format(new Date());
-
-                    String message = "Magandang Araw, " + name + "!\n\n" +
-                                "Malugod naming ipinaaabot sa inyo ang aming mainit na pagbati! /n/n" + "\r\r" +
-                                "Ang inyong account number ay " + code + ". Ang billings ay pina-paalala namin tuwing 10th ng buwan, \n\n" +
-                                "samantala naman ang pagbabayad ay tuwing ika-15 at ika-18 ng buwan. Paalala upang hindi \n\n" +
-                                "masuspende ang inyong water service, pina-paalala namin na magbayad bago ang " +
-                                "itinakdang araw ng pagbabayad." + "\r\r" +
-                                "Kung mayroon po kayong mga katanungan o mga hiling, huwag po kayong " +
-                                "mag-atubiling makipag-ugnayan sa aming tanggapan. Handa po kaming tumugon at " +
-                                "magbigay ng tulong sa anumang oras. Maraming salamat po!";
-                            
-                    textfield.setText(message); // Set the message to the text field
-                } else {
-                    JOptionPane.showMessageDialog(new JFrame(), "Client not found in the database.", "Error", JOptionPane.ERROR_MESSAGE);
-                }
-            } catch (SQLException ex) {
-                Logger.getLogger(sms_p1rww.class.getName()).log(Level.SEVERE, null, ex);
-                System.out.println("Failed to retrieve data from the database.");
-            }
-        }
-    }//GEN-LAST:event_jButton3ActionPerformed
 
     private void endlineActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_endlineActionPerformed
         // TODO add your handling code here:
@@ -1085,6 +920,7 @@ private void activityClientIncrement() {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton all_con;
     private javax.swing.JLabel bal;
+    private javax.swing.JButton btn_send;
     private javax.swing.JButton clear;
     private javax.swing.JTextField cnum;
     private javax.swing.JLabel code;
@@ -1092,13 +928,10 @@ private void activityClientIncrement() {
     private javax.swing.JComboBox<String> com;
     private javax.swing.JButton conn;
     private javax.swing.JLabel dash2;
+    private javax.swing.JLabel date_year;
     private javax.swing.JComboBox<String> endline;
     private javax.swing.JTextField idsearch;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
     private javax.swing.JComboBox<String> jComboBox1;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel15;
     private javax.swing.JLabel jLabel16;
     private javax.swing.JLabel jLabel2;
@@ -1109,6 +942,7 @@ private void activityClientIncrement() {
     private javax.swing.JLabel jLabel36;
     private javax.swing.JLabel jLabel37;
     private javax.swing.JLabel jLabel38;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JScrollPane jScrollPane1;
@@ -1119,7 +953,6 @@ private void activityClientIncrement() {
     private javax.swing.JLabel name;
     private javax.swing.JLabel num;
     private javax.swing.JButton search;
-    private javax.swing.JButton send;
     private javax.swing.JButton setcnum;
     private javax.swing.JButton sms_pa;
     private javax.swing.JTextArea textfield;

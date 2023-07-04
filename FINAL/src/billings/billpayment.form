@@ -71,8 +71,9 @@
                                   <Group type="103" groupAlignment="0" attributes="0">
                                       <Component id="cname" alignment="0" min="-2" max="-2" attributes="0"/>
                                       <Group type="102" alignment="0" attributes="0">
-                                          <Component id="JMonthChooser" min="-2" max="-2" attributes="0"/>
-                                          <EmptySpace type="separate" max="-2" attributes="0"/>
+                                          <EmptySpace min="-2" pref="41" max="-2" attributes="0"/>
+                                          <Component id="dateChooser" min="-2" pref="267" max="-2" attributes="0"/>
+                                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
                                           <Component id="jLabel1" min="-2" pref="150" max="-2" attributes="0"/>
                                       </Group>
                                   </Group>
@@ -82,7 +83,7 @@
                                   <Component id="jLabel4" min="-2" pref="337" max="-2" attributes="0"/>
                               </Group>
                           </Group>
-                          <EmptySpace min="0" pref="600" max="32767" attributes="0"/>
+                          <EmptySpace min="0" pref="467" max="32767" attributes="0"/>
                       </Group>
                       <Group type="102" alignment="0" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
@@ -92,7 +93,7 @@
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
               <Group type="102" alignment="1" attributes="0">
-                  <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                  <EmptySpace min="0" pref="426" max="32767" attributes="0"/>
                   <Component id="myButton2" min="-2" pref="167" max="-2" attributes="0"/>
                   <EmptySpace min="-2" pref="378" max="-2" attributes="0"/>
               </Group>
@@ -105,10 +106,15 @@
                   <Component id="jLabel4" min="-2" max="-2" attributes="0"/>
                   <EmptySpace min="-2" pref="19" max="-2" attributes="0"/>
                   <Component id="jSeparator1" min="-2" pref="10" max="-2" attributes="0"/>
-                  <EmptySpace min="-2" pref="26" max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                      <Component id="JMonthChooser" max="32767" attributes="0"/>
-                      <Component id="jLabel1" min="-2" pref="50" max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Group type="102" attributes="0">
+                          <EmptySpace min="-2" pref="22" max="-2" attributes="0"/>
+                          <Component id="dateChooser" min="-2" pref="54" max="-2" attributes="0"/>
+                      </Group>
+                      <Group type="102" alignment="0" attributes="0">
+                          <EmptySpace type="separate" max="-2" attributes="0"/>
+                          <Component id="jLabel1" min="-2" pref="50" max="-2" attributes="0"/>
+                      </Group>
                   </Group>
                   <EmptySpace type="separate" max="-2" attributes="0"/>
                   <Component id="jScrollPane1" min="-2" pref="408" max="-2" attributes="0"/>
@@ -268,12 +274,7 @@
             <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="jLabel1MouseClicked"/>
           </Events>
         </Component>
-        <Component class="com.toedter.calendar.JMonthChooser" name="JMonthChooser">
-          <Properties>
-            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-              <Font name="SansSerif" size="18" style="0"/>
-            </Property>
-          </Properties>
+        <Component class="com.toedter.calendar.JDateChooser" name="dateChooser">
         </Component>
       </SubComponents>
     </Container>
@@ -375,7 +376,7 @@
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
               <Font name="Bahnschrift" size="24" style="0"/>
             </Property>
-            <Property name="text" type="java.lang.String" value="Bill History"/>
+            <Property name="text" type="java.lang.String" value="Bill History              &gt;"/>
           </Properties>
           <Events>
             <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="jLabel19MouseClicked"/>
@@ -389,7 +390,7 @@
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
               <Font name="Bahnschrift" size="24" style="0"/>
             </Property>
-            <Property name="text" type="java.lang.String" value="Invoice"/>
+            <Property name="text" type="java.lang.String" value="Invoice                     &gt;"/>
           </Properties>
           <Events>
             <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="jLabel18MouseClicked"/>
@@ -417,7 +418,7 @@
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
               <Font name="Bahnschrift" size="24" style="0"/>
             </Property>
-            <Property name="text" type="java.lang.String" value="SMS"/>
+            <Property name="text" type="java.lang.String" value="SMS                         &gt;"/>
           </Properties>
           <Events>
             <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="jLabel21MouseClicked"/>
@@ -466,7 +467,7 @@
                 <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                   <Font name="Bahnschrift" size="24" style="0"/>
                 </Property>
-                <Property name="text" type="java.lang.String" value="Bill Payments          &gt;"/>
+                <Property name="text" type="java.lang.String" value="Payment                   &gt;"/>
               </Properties>
               <Events>
                 <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="jLabel16MouseClicked"/>
@@ -482,7 +483,7 @@
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
               <Font name="Bahnschrift" size="24" style="0"/>
             </Property>
-            <Property name="text" type="java.lang.String" value="Dashboard"/>
+            <Property name="text" type="java.lang.String" value="Dashboard          "/>
           </Properties>
           <Events>
             <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="dash1MouseClicked"/>

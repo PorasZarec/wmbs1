@@ -5,12 +5,7 @@ import SMS.sms_p1rww;
 import clients.client;
 import com.toedter.calendar.JMonthChooser;
 import disconnect.dis;
-import java.awt.AWTException;
 import wbms1.dashboard;
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.Rectangle;
-import java.awt.Robot;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -18,7 +13,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
@@ -33,34 +27,19 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.image.BufferedImage;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.text.DateFormat;
 import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
-import javax.imageio.ImageIO;
+import java.util.Calendar;
 import javax.swing.JComboBox;
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.JTable;
-import javax.swing.ListSelectionModel;
 import javax.swing.Timer;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 
 public class bhistory extends javax.swing.JFrame {
     
-    
-
     public bhistory() { 
-        
-                    SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss a");
-    Timer timer = new Timer(1000, new ActionListener() {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss a");
+        Timer timer = new Timer(1000, new ActionListener() {
         public void actionPerformed(ActionEvent e) {
             String formattedDate = dateFormat.format(new Date());
             datetime2.setText(formattedDate);
@@ -101,7 +80,6 @@ column.setPreferredWidth(15);
     show_table();
     
     
-        
     JMonthChooser monthChooser = new JMonthChooser();
     JComboBox<String> statusComboBox = new JComboBox<>(new String[]{"All", "Paid", "Unpaid"});
 
@@ -129,11 +107,12 @@ column.setPreferredWidth(15);
 
 }
     
+    
     Connection con;
     PreparedStatement pst;
     ResultSet rs;
     
-   public void Connect(){
+public void Connect(){
     try {
         con = DriverManager.getConnection("jdbc:mysql://localhost:3306/wbill_db","root","");
         System.out.println("Connected to database.");
@@ -209,6 +188,7 @@ public ArrayList<billing> billingList() {
     return billingList;
 }
 
+
 public void show_table() {
     try {
         Connection con = DriverManager.getConnection("jdbc:mysql://localhost/wbill_db", "root", "");
@@ -235,6 +215,7 @@ public void show_table() {
     }
 }
 
+
 private void filterData(String status, int month) {
     
     DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
@@ -257,6 +238,7 @@ private void filterData(String status, int month) {
     
     sorter.setRowFilter(RowFilter.andFilter(filters));
 }
+
 
 private void activityPrintIncrement() {
     try {
@@ -290,6 +272,7 @@ private void activityPrintIncrement() {
     }
 }
 
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -303,7 +286,7 @@ private void activityPrintIncrement() {
         jLabel4 = new javax.swing.JLabel();
         jSeparator1 = new javax.swing.JSeparator();
         printBtn = new button.MyButton();
-        JMonthChooser = new com.toedter.calendar.JMonthChooser();
+        dateChooser = new com.toedter.calendar.JDateChooser();
         color3 = new javax.swing.JPanel();
         jLabel7 = new javax.swing.JLabel();
         jLabel27 = new javax.swing.JLabel();
@@ -414,21 +397,24 @@ private void activityPrintIncrement() {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(31, 31, 31)
-                        .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 337, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(29, 29, 29)
-                        .addComponent(JMonthChooser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(82, 82, 82)
-                        .addComponent(JComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 205, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(482, 482, 482)
-                        .addComponent(printBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
                         .addContainerGap()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 1141, Short.MAX_VALUE)))
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 1141, Short.MAX_VALUE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGap(31, 31, 31)
+                                .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 337, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGap(482, 482, 482)
+                                .addComponent(printBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(dateChooser, javax.swing.GroupLayout.PREFERRED_SIZE, 267, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(43, 43, 43)
+                                .addComponent(JComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 205, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(56, 56, 56)
+                                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -439,11 +425,12 @@ private void activityPrintIncrement() {
                 .addGap(19, 19, 19)
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(47, 47, 47)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(JComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel1)
-                    .addComponent(JMonthChooser, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(46, 46, 46)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(JComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel1))
+                    .addComponent(dateChooser, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(42, 42, 42)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 390, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(30, 30, 30)
                 .addComponent(printBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -619,6 +606,7 @@ private void activityPrintIncrement() {
         
         try
         {
+            
             activityPrintIncrement();
             jTable1.print(JTable.PrintMode.FIT_WIDTH,header,footer);
             
@@ -641,66 +629,61 @@ private void activityPrintIncrement() {
     }//GEN-LAST:event_JComboBoxActionPerformed
 
     private void JComboBoxMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_JComboBoxMouseClicked
-        // TODO add your handling code here:
+
     }//GEN-LAST:event_JComboBoxMouseClicked
 
     private void jLabel1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel1MouseClicked
-        int selectedMonth = JMonthChooser.getMonth() + 1; // add 1 since January is month 0
-        String selectedStatus = (String) JComboBox.getSelectedItem();
-
-        String query;
-        if (selectedStatus.equals("All")) {
-            query = "SELECT b.id, c.code, b.bill_date, b.pay_date, b.due_date, b.amount,p.r_amount, b.status "
-            + "FROM billing_list b "
-            + "INNER JOIN client_list c ON b.client_id = c.id "
-            + "LEFT JOIN payments p ON b.id = p.bill_id "
-            + "WHERE MONTH(b.bill_date) = ?";
-        } 
-        else {
-            query = "SELECT b.id,c.code, b.bill_date, b.pay_date, b.due_date, b.amount,p.r_amount, b.status "
-            + "FROM billing_list b "
-            + "INNER JOIN client_list c ON b.client_id = c.id "
-            + "LEFT JOIN payments p ON b.id = p.bill_id "
-            + "WHERE MONTH(b.bill_date) = ? AND b.status = ?";
-        }
-
-        try {
+    try {
             Connection con = DriverManager.getConnection("jdbc:mysql://localhost/wbill_db", "root", "");
+            String query = "SELECT b.id, CONCAT(c.code, ' - ', c.firstname, ' ', c.lastname) AS client_name, b.bill_date, b.due_date, b.amount, b.status "
+                    + "FROM billing_list b "
+                    + "INNER JOIN client_list c ON b.client_id = c.id "
+                    + "WHERE MONTH(b.bill_date) = ? AND b.status = 'Unpaid'";
             PreparedStatement pst = con.prepareStatement(query);
-            pst.setInt(1, selectedMonth);
-            if (!selectedStatus.equals("All")) {
-                pst.setString(2, selectedStatus);
+
+            // Retrieve the selected date when the JLabel is clicked
+            Date selectedDate = dateChooser.getDate();
+
+            // Check if a date is selected
+            if (selectedDate != null) {
+                // Set the selected month as a parameter
+                Calendar cal = Calendar.getInstance();
+                cal.setTime(selectedDate);
+                int selectedMonth = cal.get(Calendar.MONTH) + 1;
+                pst.setInt(1, selectedMonth);
+
+                ResultSet rs = pst.executeQuery();
+
+                // Save the current column widths
+                int[] columnWidths = new int[jTable1.getColumnCount()];
+                for (int i = 0; i < jTable1.getColumnCount(); i++) {
+                    columnWidths[i] = jTable1.getColumnModel().getColumn(i).getWidth();
+                }
+
+                DefaultTableModel model = new DefaultTableModel(new String[]{"ID", "Client Name", "Bill Date", "Due Date", "Amount", "Status"}, 0);
+
+                while (rs.next()) {
+                    int id = rs.getInt("id");
+                    String client_name = rs.getString("client_name");
+                    Date bill_date = rs.getDate("bill_date");
+                    Date due_date = rs.getDate("due_date");
+                    double amount = rs.getDouble("amount");
+                    String status = rs.getString("status");
+                    model.addRow(new Object[]{id, client_name, bill_date, due_date, amount, status});
+                }
+
+                jTable1.setModel(model);
+
+                // Set the saved column widths
+                for (int i = 0; i < jTable1.getColumnCount(); i++) {
+                    jTable1.getColumnModel().getColumn(i).setPreferredWidth(columnWidths[i]);
+                }
+
+                con.close();
+            } else {
+                // Handle case when no date is selected
+                System.out.println("No date selected");
             }
-            ResultSet rs = pst.executeQuery();
-
-            // Save the current column widths
-            int[] columnWidths = new int[jTable1.getColumnCount()];
-            for (int i = 0; i < jTable1.getColumnCount(); i++) {
-                columnWidths[i] = jTable1.getColumnModel().getColumn(i).getWidth();
-            }
-
-            DefaultTableModel model = new DefaultTableModel(new String[]{"ID", "Client Code", "Bill Date", "Payment Date", "Due Date", "Amount", "Received Amount", "Status"}, 0);
-
-            while (rs.next()) {
-                int id = rs.getInt("id");
-                String client_name = rs.getString("code");
-                Date bill_date = rs.getDate("bill_date");
-                Date pay_date = rs.getDate("pay_date");
-                Date due_date = rs.getDate("due_date");
-                double amount = rs.getDouble("amount");
-                double r_amount = rs.getDouble("r_amount");
-                String status = rs.getString("status");
-                model.addRow(new Object[]{id, client_name, bill_date, pay_date, due_date, amount, r_amount, status});
-            }
-
-            jTable1.setModel(model);
-
-            // Set the saved column widths
-            for (int i = 0; i < jTable1.getColumnCount(); i++) {
-                jTable1.getColumnModel().getColumn(i).setPreferredWidth(columnWidths[i]);
-            }
-
-            con.close();
         } catch (SQLException ex) {
             Logger.getLogger(bhistory.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -790,9 +773,9 @@ private void activityPrintIncrement() {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox<String> JComboBox;
-    private com.toedter.calendar.JMonthChooser JMonthChooser;
     private javax.swing.JPanel color3;
     private javax.swing.JLabel dash1;
+    private com.toedter.calendar.JDateChooser dateChooser;
     private javax.swing.JLabel datetime2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel27;

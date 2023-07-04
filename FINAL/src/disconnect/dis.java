@@ -552,12 +552,9 @@ try {
     stmt.executeUpdate();
     show_table();
     
-        
+        // admin activity method
+        activityReconnectIncrement();
     JOptionPane.showMessageDialog(this, "Reconnection successful.");
-    
-    // admin activity method
-    activityReconnectIncrement();
-    
     reconnectionReceipt r = new reconnectionReceipt();
     r.setVisible(true);
     }

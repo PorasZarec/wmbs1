@@ -5,9 +5,12 @@
  */
 package billings;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import javax.swing.JOptionPane;
 import clients.client;
 import java.awt.Color;
-import java.awt.Font;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -15,37 +18,32 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JOptionPane;
-import javax.swing.JTable;
-import javax.swing.RowFilter;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
-import javax.swing.table.TableRowSorter;
 
 /**
  *
- * @author Khyrsean
+ * @author Patrick
  */
+
 public class billhistory extends javax.swing.JFrame {
 
       private int client_id;
         Connection con;
-   PreparedStatement pst;
-    ResultSet rs;
-     
+        PreparedStatement pst;
+         ResultSet rs;
+
        private int selectedRowIndex;
         private int clientId;  
         private String client_ID;
            private int id;
 
 
-        public billhistory(int client_id ) {
+public billhistory(int client_id ) {
             initComponents();
             this.client_id = client_id;
             Connect();
@@ -76,29 +74,26 @@ public class billhistory extends javax.swing.JFrame {
 
         }
 
-    private billhistory() { 
+private billhistory() { 
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-          public void setClientID(int client_id) {
-            this.client_id = client_id;
-            populateTable();
-        }
+public void setClientID(int client_id) {
+    this.client_id = client_id;
+    populateTable();
+}
           
-          
-           
- 
+public void Connect() {
+    try {
+        con = DriverManager.getConnection("jdbc:mysql://localhost:3306/wbill_db", "root", "");
+        System.out.println("Connected to database.");
+    } catch (SQLException ex) {
+        Logger.getLogger(billhistory.class.getName()).log(Level.SEVERE, null, ex);
+        System.out.println("Failed to connect to database.");
+    }
+}
 
-        public void Connect() {
-            try {
-                con = DriverManager.getConnection("jdbc:mysql://localhost:3306/wbill_db", "root", "");
-                System.out.println("Connected to database.");
-            } catch (SQLException ex) {
-                Logger.getLogger(billhistory.class.getName()).log(Level.SEVERE, null, ex);
-                System.out.println("Failed to connect to database.");
-            }
-        }
-  public List<bill> getBills(int clientId) {
+public List<bill> getBills(int clientId) {
     List<bill> billList = new ArrayList<>();
     try {
         String query = "SELECT b.id, b.client_id, b.bill_date, p.payment_date, b.pay_date, b.due_date, b.amount, p.r_amount, b.status "
@@ -128,9 +123,7 @@ public class billhistory extends javax.swing.JFrame {
     return billList;
 }
 
-  
-  
-  public void fillBillTable(int clientId) {
+public void fillBillTable(int clientId) {
     List<bill> billList = getBills(clientId);
     DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
     model.setRowCount(0);
@@ -149,12 +142,11 @@ public class billhistory extends javax.swing.JFrame {
 
   }
 
-    
-    public billhistory(String client_id) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+public billhistory(String client_id) {
+    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+}
 
-  private void populateTable() {
+private void populateTable() {
         try {
             if (con == null) {
                 // Handle null connection object here
@@ -212,7 +204,8 @@ while (rs.next()) {
         } catch (SQLException ex) {
             Logger.getLogger(billhistory.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }
+}
+
 public double getUnpaidAmount(int client_id) {
     double unpaidAmount = 0.0;
     Connection con = null;
@@ -248,6 +241,7 @@ public double getUnpaidAmount(int client_id) {
 
     return unpaidAmount;
 }
+
 private void displayUnpaidAmount() {
     double unpaidAmount = getUnpaidAmount(client_id);
     String unpaidText = String.format("%.2f", unpaidAmount);
@@ -259,11 +253,6 @@ private void displayUnpaidAmount() {
     System.out.println("Client ID: " + client_id);
     System.out.println("Unpaid Amount: " + unpaidAmount);
 }
-
-
-
-
-
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -398,9 +387,9 @@ private void displayUnpaidAmount() {
     }// </editor-fold>//GEN-END:initComponents
 
     private void myButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_myButton2ActionPerformed
-      client cl = new client();
-      cl.show();
-      dispose();
+    client cl = new client();
+    cl.show();
+    dispose();
     }//GEN-LAST:event_myButton2ActionPerformed
 
     /**
