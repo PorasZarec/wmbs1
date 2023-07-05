@@ -47,6 +47,10 @@ public class receipt extends javax.swing.JFrame {
     private static String dateTop;
     private BufferedImage image;
     private static String client_name;
+    private static String client_ID;
+    private static String BillDate;
+    private static String PaymentDate;
+    private static String ClientName;
                             
 //    receipt.someFunction(selectedID, selectedName, selectedDateFrom, selectedDateTo);
     
@@ -57,9 +61,14 @@ public class receipt extends javax.swing.JFrame {
         receipt.nameVariable = firstName;
         receipt.dateFromp = dateFrom;
         receipt.dateTop = dateTo;
-
-
 }
+    
+    public static void payFunction(String receipt_ID, String receipt_BillDate, String  receipt_PaymentDate, String receipt_ClientName){
+        receipt.client_ID = receipt_ID;
+        receipt.BillDate = receipt_BillDate;
+        receipt.PaymentDate = receipt_PaymentDate;
+        receipt.ClientName = receipt_ClientName;
+    }
     
     
 
@@ -67,15 +76,7 @@ public class receipt extends javax.swing.JFrame {
 public receipt() {
     initComponents();
     
-//        addWindowListener(new java.awt.event.WindowAdapter() {
-//        @Override
-//        public void windowClosing(java.awt.event.WindowEvent windowEvent) {
-//            dashboard dash = new dashboard();
-//            dash.show();
-//
-//        }
-//    });
-
+    
     addComponentListener(new ComponentAdapter() {
         @Override
         public void componentShown(ComponentEvent e) {
@@ -88,18 +89,19 @@ public receipt() {
     addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                int option = JOptionPane.showConfirmDialog(null, "Do you want to exit?", "Confirmation", JOptionPane.YES_NO_OPTION);
+                int option = JOptionPane.showConfirmDialog(null, "Press \"NO\" return to Dashboard", "Continue Print?", JOptionPane.YES_NO_OPTION);
                 if (option == JOptionPane.YES_OPTION) {
-                    
                     invoice in = new invoice();
                     in.show();
                     dispose();
-                
+                    
                 } else {
                     
                     invoice in = new invoice();
+                    in.dispose();
                     in.show();
                     dispose();
+                    
                     
                     setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE); // Do nothing if "No" is selected
                 }
@@ -120,10 +122,10 @@ public void changeTextView(){
 //            amount -= 180.00;
             
             billNo.setText(String.valueOf(randomNumber));
-            dateFrom.setText(dateFromp);
-            dateTo.setText(dateTop);
-            conName.setText(nameVariable);
-            accNumber.setText(idVariable);
+            dateFrom.setText(BillDate);
+            dateTo.setText(PaymentDate);
+            conName.setText(ClientName);
+            accNumber.setText(client_ID);
         
             
 //    billNo.setText(String.valueOf(randomNumber));
@@ -235,17 +237,13 @@ private void saveAsImage() {
         jSeparator3 = new javax.swing.JSeparator();
         jLabel7 = new javax.swing.JLabel();
         jLabel12 = new javax.swing.JLabel();
-        jSeparator4 = new javax.swing.JSeparator();
-        jLabel13 = new javax.swing.JLabel();
-        jLabel14 = new javax.swing.JLabel();
         jSeparator5 = new javax.swing.JSeparator();
         jLabel15 = new javax.swing.JLabel();
         jLabel16 = new javax.swing.JLabel();
         tv_Balance = new javax.swing.JLabel();
-        Balance1 = new javax.swing.JLabel();
-        Balance3 = new javax.swing.JLabel();
-        Balance4 = new javax.swing.JLabel();
-        Balance5 = new javax.swing.JLabel();
+        tv_payment = new javax.swing.JLabel();
+        tv_change = new javax.swing.JLabel();
+        total_amount = new javax.swing.JLabel();
         jLabel17 = new javax.swing.JLabel();
         accNumber = new javax.swing.JLabel();
 
@@ -338,18 +336,7 @@ private void saveAsImage() {
 
         jLabel12.setForeground(new java.awt.Color(51, 51, 51));
         jLabel12.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        jLabel12.setText("Late Payment:");
-
-        jSeparator4.setForeground(new java.awt.Color(0, 0, 0));
-
-        jLabel13.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        jLabel13.setForeground(new java.awt.Color(51, 51, 51));
-        jLabel13.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        jLabel13.setText("P");
-
-        jLabel14.setForeground(new java.awt.Color(51, 51, 51));
-        jLabel14.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        jLabel14.setText("Penalty Charges:");
+        jLabel12.setText("Change:");
 
         jSeparator5.setForeground(new java.awt.Color(0, 0, 0));
 
@@ -365,23 +352,19 @@ private void saveAsImage() {
 
         tv_Balance.setForeground(new java.awt.Color(51, 51, 51));
         tv_Balance.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        tv_Balance.setText("0.00");
+        tv_Balance.setText("180.0");
 
-        Balance1.setForeground(new java.awt.Color(51, 51, 51));
-        Balance1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        Balance1.setText("180.00");
+        tv_payment.setForeground(new java.awt.Color(51, 51, 51));
+        tv_payment.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        tv_payment.setText("180.00");
 
-        Balance3.setForeground(new java.awt.Color(51, 51, 51));
-        Balance3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        Balance3.setText("0.00");
+        tv_change.setForeground(new java.awt.Color(51, 51, 51));
+        tv_change.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        tv_change.setText("0.00");
 
-        Balance4.setForeground(new java.awt.Color(51, 51, 51));
-        Balance4.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        Balance4.setText("0.00");
-
-        Balance5.setForeground(new java.awt.Color(51, 51, 51));
-        Balance5.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        Balance5.setText("180.00");
+        total_amount.setForeground(new java.awt.Color(51, 51, 51));
+        total_amount.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        total_amount.setText("180.00");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -390,17 +373,6 @@ private void saveAsImage() {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGap(24, 24, 24)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                        .addComponent(jLabel14, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(66, 66, 66)
-                        .addComponent(jLabel13)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jSeparator4, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addGap(41, 41, 41)
-                                .addComponent(Balance4, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE))))
                     .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                         .addGroup(jPanel2Layout.createSequentialGroup()
                             .addComponent(jLabel12, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -412,7 +384,7 @@ private void saveAsImage() {
                                     .addComponent(jSeparator3, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addGroup(jPanel2Layout.createSequentialGroup()
                                     .addGap(41, 41, 41)
-                                    .addComponent(Balance3, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                    .addComponent(tv_change, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE))))
                         .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
                             .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGap(66, 66, 66)
@@ -423,7 +395,7 @@ private void saveAsImage() {
                                     .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addGroup(jPanel2Layout.createSequentialGroup()
                                     .addGap(45, 45, 45)
-                                    .addComponent(Balance1, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                    .addComponent(tv_payment, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE))))
                         .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
                             .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGap(66, 66, 66)
@@ -444,7 +416,7 @@ private void saveAsImage() {
                             .addComponent(jSeparator5, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(jPanel2Layout.createSequentialGroup()
                                 .addGap(43, 43, 43)
-                                .addComponent(Balance5, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                                .addComponent(total_amount, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                 .addContainerGap(31, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
@@ -467,34 +439,25 @@ private void saveAsImage() {
                             .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGap(18, 18, 18)
-                        .addComponent(Balance1)
+                        .addComponent(tv_payment)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(Balance3)
+                        .addComponent(tv_change)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jSeparator3, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jLabel12, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(12, 12, 12)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(Balance4)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jSeparator4, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jLabel14, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jLabel13, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jLabel16, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(jLabel15, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(Balance5)
+                        .addComponent(total_amount)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jSeparator5, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
@@ -574,7 +537,7 @@ private void saveAsImage() {
                         .addComponent(conName)))
                 .addGap(18, 18, 18)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(33, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -608,11 +571,7 @@ private void saveAsImage() {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel Balance1;
     private javax.swing.JLabel Balance2;
-    private javax.swing.JLabel Balance3;
-    private javax.swing.JLabel Balance4;
-    private javax.swing.JLabel Balance5;
     private javax.swing.JLabel accNumber;
     private javax.swing.JLabel billNo;
     private javax.swing.JLabel conName;
@@ -622,8 +581,6 @@ private void saveAsImage() {
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
-    private javax.swing.JLabel jLabel13;
-    private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel15;
     private javax.swing.JLabel jLabel16;
     private javax.swing.JLabel jLabel17;
@@ -640,8 +597,10 @@ private void saveAsImage() {
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
     private javax.swing.JSeparator jSeparator3;
-    private javax.swing.JSeparator jSeparator4;
     private javax.swing.JSeparator jSeparator5;
+    private javax.swing.JLabel total_amount;
     private javax.swing.JLabel tv_Balance;
+    private javax.swing.JLabel tv_change;
+    private javax.swing.JLabel tv_payment;
     // End of variables declaration//GEN-END:variables
 }

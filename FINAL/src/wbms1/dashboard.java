@@ -61,6 +61,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.math.BigDecimal;import java.math.BigDecimal;
 import java.util.List;
+import javax.swing.table.TableColumn;
 
 public class dashboard extends javax.swing.JFrame {
 
@@ -80,6 +81,29 @@ public class dashboard extends javax.swing.JFrame {
              
             }
         });
+        
+//        TableColumn column = null;
+//        column = table.getColumnModel().getColumn(0); // bill date
+//        column.setPreferredWidth(7);
+//        column = table.getColumnModel().getColumn(1); // payment date
+//        column.setPreferredWidth(7);
+//        column = table.getColumnModel().getColumn(2); // pay date
+//        column.setPreferredWidth(7);
+//        column = table.getColumnModel().getColumn(3); // due  date
+//        column.setPreferredWidth(7);
+//        column = table.getColumnModel().getColumn(4); // amount
+//        column.setPreferredWidth(7); 
+//        column = table.getColumnModel().getColumn(5); // received amount
+//        column.setPreferredWidth(7); 
+//        column = table.getColumnModel().getColumn(6); // status
+//        column.setPreferredWidth(7); 
+//        column = table.getColumnModel().getColumn(7); // status
+//        column.setPreferredWidth(7); 
+//        column = table.getColumnModel().getColumn(8); // status
+//        column.setPreferredWidth(7); 
+//        column = table.getColumnModel().getColumn(9); // status
+//        column.setPreferredWidth(7); 
+        
         timer.start();
         initComponents();
         Connect();
@@ -567,7 +591,7 @@ public int countDisconnected() {
 
         jLabel16.setBackground(java.awt.Color.lightGray);
         jLabel16.setFont(new java.awt.Font("Bahnschrift", 0, 24)); // NOI18N
-        jLabel16.setText("Payments");
+        jLabel16.setText("Payment");
         jLabel16.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jLabel16MouseClicked(evt);

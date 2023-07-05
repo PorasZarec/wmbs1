@@ -133,7 +133,7 @@
                   </Group>
                   <EmptySpace type="separate" max="-2" attributes="0"/>
                   <Component id="jPanel2" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace pref="33" max="32767" attributes="0"/>
+                  <EmptySpace max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -265,21 +265,6 @@
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace min="-2" pref="24" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Group type="102" alignment="1" attributes="0">
-                              <Component id="jLabel14" min="-2" pref="125" max="-2" attributes="0"/>
-                              <EmptySpace min="-2" pref="66" max="-2" attributes="0"/>
-                              <Component id="jLabel13" min="-2" max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="0" attributes="0">
-                                  <Group type="102" attributes="0">
-                                      <EmptySpace max="-2" attributes="0"/>
-                                      <Component id="jSeparator4" min="-2" pref="142" max="-2" attributes="0"/>
-                                  </Group>
-                                  <Group type="102" alignment="0" attributes="0">
-                                      <EmptySpace min="-2" pref="41" max="-2" attributes="0"/>
-                                      <Component id="Balance4" min="-2" pref="71" max="-2" attributes="0"/>
-                                  </Group>
-                              </Group>
-                          </Group>
                           <Group type="103" groupAlignment="1" attributes="0">
                               <Group type="102" attributes="0">
                                   <Component id="jLabel12" min="-2" pref="125" max="-2" attributes="0"/>
@@ -292,7 +277,7 @@
                                       </Group>
                                       <Group type="102" alignment="0" attributes="0">
                                           <EmptySpace min="-2" pref="41" max="-2" attributes="0"/>
-                                          <Component id="Balance3" min="-2" pref="71" max="-2" attributes="0"/>
+                                          <Component id="tv_change" min="-2" pref="71" max="-2" attributes="0"/>
                                       </Group>
                                   </Group>
                               </Group>
@@ -307,7 +292,7 @@
                                       </Group>
                                       <Group type="102" alignment="0" attributes="0">
                                           <EmptySpace min="-2" pref="45" max="-2" attributes="0"/>
-                                          <Component id="Balance1" min="-2" pref="71" max="-2" attributes="0"/>
+                                          <Component id="tv_payment" min="-2" pref="71" max="-2" attributes="0"/>
                                       </Group>
                                   </Group>
                               </Group>
@@ -336,7 +321,7 @@
                                   <Component id="jSeparator5" min="-2" pref="142" max="-2" attributes="0"/>
                                   <Group type="102" alignment="0" attributes="0">
                                       <EmptySpace min="-2" pref="43" max="-2" attributes="0"/>
-                                      <Component id="Balance5" min="-2" pref="71" max="-2" attributes="0"/>
+                                      <Component id="total_amount" min="-2" pref="71" max="-2" attributes="0"/>
                                   </Group>
                               </Group>
                           </Group>
@@ -370,7 +355,7 @@
                           </Group>
                           <Group type="102" alignment="1" attributes="0">
                               <EmptySpace type="separate" max="-2" attributes="0"/>
-                              <Component id="Balance1" min="-2" max="-2" attributes="0"/>
+                              <Component id="tv_payment" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="32767" attributes="0"/>
                               <Component id="jSeparator2" min="-2" pref="10" max="-2" attributes="0"/>
                           </Group>
@@ -378,7 +363,7 @@
                       <EmptySpace type="separate" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="1" max="-2" attributes="0">
                           <Group type="102" alignment="1" attributes="0">
-                              <Component id="Balance3" min="-2" max="-2" attributes="0"/>
+                              <Component id="tv_change" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="32767" attributes="0"/>
                               <Component id="jSeparator3" min="-2" pref="10" max="-2" attributes="0"/>
                           </Group>
@@ -387,26 +372,14 @@
                               <Component id="jLabel7" alignment="3" min="-2" pref="26" max="-2" attributes="0"/>
                           </Group>
                       </Group>
-                      <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="1" attributes="0">
-                          <Group type="102" alignment="1" attributes="0">
-                              <Component id="Balance4" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace max="32767" attributes="0"/>
-                              <Component id="jSeparator4" min="-2" pref="10" max="-2" attributes="0"/>
-                          </Group>
-                          <Group type="103" alignment="1" groupAlignment="3" attributes="0">
-                              <Component id="jLabel14" alignment="3" min="-2" pref="26" max="-2" attributes="0"/>
-                              <Component id="jLabel13" alignment="3" min="-2" pref="26" max="-2" attributes="0"/>
-                          </Group>
-                      </Group>
-                      <EmptySpace min="-2" pref="18" max="-2" attributes="0"/>
+                      <EmptySpace max="32767" attributes="0"/>
                       <Group type="103" groupAlignment="1" attributes="0">
                           <Group type="103" alignment="1" groupAlignment="3" attributes="0">
                               <Component id="jLabel16" alignment="3" min="-2" pref="26" max="-2" attributes="0"/>
                               <Component id="jLabel15" alignment="3" min="-2" pref="26" max="-2" attributes="0"/>
                           </Group>
                           <Group type="102" alignment="1" attributes="0">
-                              <Component id="Balance5" min="-2" max="-2" attributes="0"/>
+                              <Component id="total_amount" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="jSeparator5" min="-2" pref="10" max="-2" attributes="0"/>
                           </Group>
@@ -498,35 +471,7 @@
                   <Color blue="33" green="33" red="33" type="rgb"/>
                 </Property>
                 <Property name="horizontalAlignment" type="int" value="2"/>
-                <Property name="text" type="java.lang.String" value="Late Payment:"/>
-              </Properties>
-            </Component>
-            <Component class="javax.swing.JSeparator" name="jSeparator4">
-              <Properties>
-                <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                  <Color blue="0" green="0" red="0" type="rgb"/>
-                </Property>
-              </Properties>
-            </Component>
-            <Component class="javax.swing.JLabel" name="jLabel13">
-              <Properties>
-                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                  <Font name="Segoe UI" size="12" style="1"/>
-                </Property>
-                <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                  <Color blue="33" green="33" red="33" type="rgb"/>
-                </Property>
-                <Property name="horizontalAlignment" type="int" value="2"/>
-                <Property name="text" type="java.lang.String" value="P"/>
-              </Properties>
-            </Component>
-            <Component class="javax.swing.JLabel" name="jLabel14">
-              <Properties>
-                <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                  <Color blue="33" green="33" red="33" type="rgb"/>
-                </Property>
-                <Property name="horizontalAlignment" type="int" value="2"/>
-                <Property name="text" type="java.lang.String" value="Penalty Charges:"/>
+                <Property name="text" type="java.lang.String" value="Change:"/>
               </Properties>
             </Component>
             <Component class="javax.swing.JSeparator" name="jSeparator5">
@@ -566,10 +511,10 @@
                   <Color blue="33" green="33" red="33" type="rgb"/>
                 </Property>
                 <Property name="horizontalAlignment" type="int" value="0"/>
-                <Property name="text" type="java.lang.String" value="0.00"/>
+                <Property name="text" type="java.lang.String" value="180.0"/>
               </Properties>
             </Component>
-            <Component class="javax.swing.JLabel" name="Balance1">
+            <Component class="javax.swing.JLabel" name="tv_payment">
               <Properties>
                 <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                   <Color blue="33" green="33" red="33" type="rgb"/>
@@ -578,7 +523,7 @@
                 <Property name="text" type="java.lang.String" value="180.00"/>
               </Properties>
             </Component>
-            <Component class="javax.swing.JLabel" name="Balance3">
+            <Component class="javax.swing.JLabel" name="tv_change">
               <Properties>
                 <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                   <Color blue="33" green="33" red="33" type="rgb"/>
@@ -587,16 +532,7 @@
                 <Property name="text" type="java.lang.String" value="0.00"/>
               </Properties>
             </Component>
-            <Component class="javax.swing.JLabel" name="Balance4">
-              <Properties>
-                <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                  <Color blue="33" green="33" red="33" type="rgb"/>
-                </Property>
-                <Property name="horizontalAlignment" type="int" value="0"/>
-                <Property name="text" type="java.lang.String" value="0.00"/>
-              </Properties>
-            </Component>
-            <Component class="javax.swing.JLabel" name="Balance5">
+            <Component class="javax.swing.JLabel" name="total_amount">
               <Properties>
                 <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                   <Color blue="33" green="33" red="33" type="rgb"/>

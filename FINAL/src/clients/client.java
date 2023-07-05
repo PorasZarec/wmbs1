@@ -785,6 +785,8 @@ try {
     pstmt.setInt(1, clientID);
     pstmt.executeUpdate();
     
+    
+    
 } catch (SQLException ex) {
     ex.printStackTrace();
     JOptionPane.showMessageDialog(this, "Failed to update client status.", "Error", JOptionPane.ERROR_MESSAGE);
@@ -799,25 +801,10 @@ table.setValueAt("Disconnected", selectedRow, 5);
 // Show a confirmation message
 
 
-// admin activity update
-activityDisconnectIncrement();
+// admin activity method DONT REMOVE 
+    activityDisconnectIncrement();
 
 JOptionPane.showMessageDialog(this, "Client status has been updated.", "Success", JOptionPane.INFORMATION_MESSAGE);
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
         
         
     }//GEN-LAST:event_btn_disconnectActionPerformed

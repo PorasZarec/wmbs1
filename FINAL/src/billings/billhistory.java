@@ -5,45 +5,51 @@
  */
 package billings;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import javax.swing.JOptionPane;
 import clients.client;
 import java.awt.Color;
+import java.awt.Font;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
+import javax.swing.JTable;
+import javax.swing.RowFilter;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
+import javax.swing.table.TableRowSorter;
 
 /**
  *
- * @author Patrick
+ * @author Khyrsean
  */
-
 public class billhistory extends javax.swing.JFrame {
 
       private int client_id;
         Connection con;
-        PreparedStatement pst;
-         ResultSet rs;
-
+   PreparedStatement pst;
+    ResultSet rs;
+     
        private int selectedRowIndex;
         private int clientId;  
         private String client_ID;
            private int id;
 
 
-public billhistory(int client_id ) {
+        public billhistory(int client_id ) {
             initComponents();
             this.client_id = client_id;
             Connect();
@@ -70,30 +76,54 @@ public billhistory(int client_id ) {
         
  
 
+jTable1.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+    @Override
+    public void valueChanged(ListSelectionEvent e) {
+        if (!e.getValueIsAdjusting()) {
+            int selectedRow = jTable1.getSelectedRow();
 
+            if (selectedRow != -1) {
+                // Get the values from the selected row
+                Object selectedIDObj = jTable1.getValueAt(selectedRow, 0);
+                Object selectedNameObj = jTable1.getValueAt(selectedRow, 1);
+                Object selectedDateFromObj = jTable1.getValueAt(selectedRow, 2);
+                Object selectedDateToObj = jTable1.getValueAt(selectedRow, 3);
+
+                // Convert the values to strings
+                String selectedID = String.valueOf(selectedIDObj);
+                String selectedName = String.valueOf(selectedNameObj);
+                String selectedDateFrom = String.valueOf(selectedDateFromObj);
+                String selectedDateTo = String.valueOf(selectedDateToObj);
+//                JOptionPane.showMessageDialog(rootPane, selectedID);
+                
+                Payment.payFunction(selectedID, selectedName, selectedDateFrom, selectedDateTo);
+            }
+        }
+    }
+});
 
         }
 
-private billhistory() { 
+    private billhistory() { 
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-public void setClientID(int client_id) {
-    this.client_id = client_id;
-    populateTable();
-}
-          
-public void Connect() {
-    try {
-        con = DriverManager.getConnection("jdbc:mysql://localhost:3306/wbill_db", "root", "");
-        System.out.println("Connected to database.");
-    } catch (SQLException ex) {
-        Logger.getLogger(billhistory.class.getName()).log(Level.SEVERE, null, ex);
-        System.out.println("Failed to connect to database.");
-    }
-}
+          public void setClientID(int client_id) {
+            this.client_id = client_id;
+            populateTable();
+        } 
+ 
 
-public List<bill> getBills(int clientId) {
+        public void Connect() {
+            try {
+                con = DriverManager.getConnection("jdbc:mysql://localhost:3306/wbill_db", "root", "");
+                System.out.println("Connected to database.");
+            } catch (SQLException ex) {
+                Logger.getLogger(billhistory.class.getName()).log(Level.SEVERE, null, ex);
+                System.out.println("Failed to connect to database.");
+            }
+        }
+  public List<bill> getBills(int clientId) {
     List<bill> billList = new ArrayList<>();
     try {
         String query = "SELECT b.id, b.client_id, b.bill_date, p.payment_date, b.pay_date, b.due_date, b.amount, p.r_amount, b.status "
@@ -123,7 +153,9 @@ public List<bill> getBills(int clientId) {
     return billList;
 }
 
-public void fillBillTable(int clientId) {
+  
+  
+  public void fillBillTable(int clientId) {
     List<bill> billList = getBills(clientId);
     DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
     model.setRowCount(0);
@@ -142,22 +174,27 @@ public void fillBillTable(int clientId) {
 
   }
 
-public billhistory(String client_id) {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-}
+    
+    public billhistory(String client_id) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 
-private void populateTable() {
+  public void populateTable() {
         try {
             if (con == null) {
                 // Handle null connection object here
                 return;
             }
-    String getClientName = "SELECT CONCAT(code, ' -  ', firstname, ' ', lastname) AS clientName FROM client_list WHERE id = " + client_id;
+    String getClientName = "SELECT CONCAT(code, ' -  ', firstname, ' ', lastname) AS clientName, created_at, address FROM client_list WHERE id = " + client_id;
 Statement stmt1 = con.createStatement();
 ResultSet rs1 = stmt1.executeQuery(getClientName);
 String clientName = "";
+String createdAt = "";
+String addressDB = "";
 if (rs1.next()) {
     clientName = rs1.getString("clientName");
+    createdAt = rs1.getString("created_at");
+    addressDB = rs1.getString("address");
     if (getUnpaidAmount(client_id) >= 540) {
         cname.setForeground(Color.RED); // set the client name color to red
     } else {
@@ -166,7 +203,7 @@ if (rs1.next()) {
 }
 
 
-       String sql = "SELECT b.bill_date, p.payment_date, b.pay_date, b.due_date ,b.amount, p.r_amount, b.status "
+       String sql = "SELECT b.id, b.bill_date, p.payment_date, b.pay_date, b.due_date ,b.amount, p.r_amount, b.status "
                 + "FROM billing_list b "
                 + "LEFT JOIN payments p ON b.id = p.bill_id "
                 + "WHERE b.client_id = ?";
@@ -174,6 +211,7 @@ PreparedStatement pstmt = con.prepareStatement(sql);
 pstmt.setInt(1, client_id);
 ResultSet rs = pstmt.executeQuery();
 DefaultTableModel model = new DefaultTableModel();
+model.addColumn("ID");
 model.addColumn("Bill Date");
 model.addColumn("Payment Date");
 model.addColumn("Pay Date");
@@ -182,18 +220,31 @@ model.addColumn("Amount");
 model.addColumn("Received Amount");
 model.addColumn("Status");
 while (rs.next()) {
-    Object[] row = new Object[7];
-    row[0] = rs.getDate("bill_date");
+    Object[] row = new Object[8];
+    row[0] = rs.getInt("id");
+    row[1] = rs.getDate("bill_date");
     if (rs.getDate("payment_date") != null) {
-        row[1] = rs.getDate("payment_date");
+        row[2] = rs.getDate("payment_date");
     } else {
-        row[1] = "Not Paid";
+        row[2] = "Not Paid";
     }
-    row[2] = rs.getDate("pay_date");
-    row[3] = rs.getDate("due_date");
-    row[4] = rs.getBigDecimal("amount");
-    row[5] = rs.getBigDecimal("r_amount");
-    row[6] = rs.getString("status");
+    row[3] = rs.getDate("pay_date");
+    row[4] = rs.getDate("due_date");
+    row[5] = rs.getDouble("amount");
+    row[6] = rs.getDouble("r_amount");
+    row[7] = rs.getString("status");
+    
+//    row[0] = rs.getDate("bill_date");
+//    if (rs.getDate("payment_date") != null) {
+//        row[1] = rs.getDate("payment_date");
+//    } else {
+//        row[1] = "Not Paid";
+//    }
+//    row[2] = rs.getDate("pay_date");
+//    row[3] = rs.getDate("due_date");
+//    row[4] = rs.getBigDecimal("amount");
+//    row[5] = rs.getBigDecimal("r_amount");
+//    row[6] = rs.getString("status");
  
     model.addRow(row);
 }
@@ -201,11 +252,13 @@ while (rs.next()) {
             jTable1.setModel(model);
 
            cname.setText("Bill for: " + clientName);
+           address.setText("Address : " + addressDB);
+           
+           
         } catch (SQLException ex) {
             Logger.getLogger(billhistory.class.getName()).log(Level.SEVERE, null, ex);
         }
-}
-
+    }
 public double getUnpaidAmount(int client_id) {
     double unpaidAmount = 0.0;
     Connection con = null;
@@ -241,7 +294,6 @@ public double getUnpaidAmount(int client_id) {
 
     return unpaidAmount;
 }
-
 private void displayUnpaidAmount() {
     double unpaidAmount = getUnpaidAmount(client_id);
     String unpaidText = String.format("%.2f", unpaidAmount);
@@ -254,6 +306,9 @@ private void displayUnpaidAmount() {
     System.out.println("Unpaid Amount: " + unpaidAmount);
 }
 
+
+
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -261,11 +316,14 @@ private void displayUnpaidAmount() {
         jPanel1 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
-        cname = new javax.swing.JLabel();
-        myButton2 = new button.MyButton();
+        tv_dateCreated = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         jSeparator1 = new javax.swing.JSeparator();
         unpaid = new javax.swing.JLabel();
+        cname = new javax.swing.JLabel();
+        address = new javax.swing.JLabel();
+        myButton3 = new button.MyButton();
+        pay_bill = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -278,14 +336,14 @@ private void displayUnpaidAmount() {
 
             },
             new String [] {
-                "Bill Date", "Payment Date", "Pay Date", "Due Date", "Amount", "Received Amount", "Status"
+                "ID", "Bill Date", "Payment Date", "Pay Date", "Due Date", "Amount", "Received Amount", "Status"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
+                java.lang.Object.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, false
+                false, false, false, false, false, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -303,24 +361,8 @@ private void displayUnpaidAmount() {
         jTable1.getTableHeader().setReorderingAllowed(false);
         jScrollPane1.setViewportView(jTable1);
 
-        cname.setFont(new java.awt.Font("Bookman Old Style", 0, 24)); // NOI18N
-        cname.setText("cname");
-
-        myButton2.setBackground(new java.awt.Color(255, 51, 51));
-        myButton2.setForeground(new java.awt.Color(255, 255, 255));
-        myButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/water/cancel (2) (1).png"))); // NOI18N
-        myButton2.setText("Back");
-        myButton2.setBorderColor(new java.awt.Color(255, 51, 51));
-        myButton2.setColor(new java.awt.Color(255, 51, 51));
-        myButton2.setColorClick(new java.awt.Color(255, 51, 51));
-        myButton2.setColorOver(new java.awt.Color(255, 51, 51));
-        myButton2.setFont(new java.awt.Font("Bahnschrift", 1, 18)); // NOI18N
-        myButton2.setRadius(50);
-        myButton2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                myButton2ActionPerformed(evt);
-            }
-        });
+        tv_dateCreated.setFont(new java.awt.Font("Bookman Old Style", 0, 24)); // NOI18N
+        tv_dateCreated.setText("date created :");
 
         jLabel4.setFont(new java.awt.Font("Bookman Old Style", 1, 24)); // NOI18N
         jLabel4.setText("Client Bill Information");
@@ -328,47 +370,107 @@ private void displayUnpaidAmount() {
         unpaid.setFont(new java.awt.Font("SansSerif", 0, 18)); // NOI18N
         unpaid.setText("Total Unpaid Amount: ");
 
+        cname.setFont(new java.awt.Font("Bookman Old Style", 0, 24)); // NOI18N
+        cname.setText("cname");
+
+        address.setFont(new java.awt.Font("Bookman Old Style", 0, 24)); // NOI18N
+        address.setText("address :");
+
+        myButton3.setBackground(new java.awt.Color(255, 51, 51));
+        myButton3.setForeground(new java.awt.Color(255, 255, 255));
+        myButton3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/water/cancel (2) (1).png"))); // NOI18N
+        myButton3.setText("Back");
+        myButton3.setBorderColor(new java.awt.Color(255, 51, 51));
+        myButton3.setColor(new java.awt.Color(255, 51, 51));
+        myButton3.setColorClick(new java.awt.Color(255, 51, 51));
+        myButton3.setColorOver(new java.awt.Color(255, 51, 51));
+        myButton3.setFont(new java.awt.Font("Bahnschrift", 1, 18)); // NOI18N
+        myButton3.setRadius(50);
+        myButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                myButton3ActionPerformed(evt);
+            }
+        });
+
+        pay_bill.setText("jButton1");
+        pay_bill.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                pay_billActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jSeparator1)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addGap(0, 32, Short.MAX_VALUE)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 1143, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(26, 26, 26))
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(511, 511, 511)
-                .addComponent(myButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(unpaid)
-                .addGap(138, 138, 138))
-            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(55, 55, 55)
-                        .addComponent(cname))
+                        .addGap(1, 1, 1)
+                        .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 337, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap())
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(21, 21, 21)
-                        .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 337, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 1143, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGap(348, 348, 348)
+                                .addComponent(pay_bill)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(unpaid)
+                                .addGap(127, 127, 127)))
+                        .addGap(0, 24, Short.MAX_VALUE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(14, 14, 14)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(tv_dateCreated)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jSeparator1))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(address)
+                                    .addComponent(cname))
+                                .addGap(0, 0, Short.MAX_VALUE))))))
+            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel1Layout.createSequentialGroup()
+                    .addGap(497, 497, 497)
+                    .addComponent(myButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap(501, Short.MAX_VALUE)))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel4)
-                .addGap(19, 19, 19)
-                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(29, 29, 29)
-                .addComponent(cname)
-                .addGap(30, 30, 30)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 402, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(myButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(unpaid))
-                .addContainerGap(27, Short.MAX_VALUE))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGap(19, 19, 19)
+                                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 28, Short.MAX_VALUE)
+                                .addComponent(tv_dateCreated)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(cname)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(address)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)))
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 402, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 48, Short.MAX_VALUE)
+                        .addComponent(unpaid)
+                        .addGap(14, 14, 14))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(pay_bill)
+                        .addGap(29, 29, 29))))
+            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                    .addContainerGap(592, Short.MAX_VALUE)
+                    .addComponent(myButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGap(16, 16, 16)))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -386,11 +488,60 @@ private void displayUnpaidAmount() {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void myButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_myButton2ActionPerformed
-    client cl = new client();
-    cl.show();
-    dispose();
-    }//GEN-LAST:event_myButton2ActionPerformed
+    private void myButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_myButton3ActionPerformed
+
+    }//GEN-LAST:event_myButton3ActionPerformed
+
+    private void pay_billActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pay_billActionPerformed
+//        Payment p = new Payment();
+//        p.setVisible(true);
+
+//        int rowIndex = jTable1.getSelectedRow();
+//    if (rowIndex < 0) {
+//    JOptionPane.showMessageDialog(this, "Please select a row.");
+//    return;
+//    }
+//
+//    int billId = (int) jTable1.getValueAt(rowIndex, jTable1.getColumnModel().getColumnIndex("ID"));
+//
+//    double billAmount = (double) jTable1.getValueAt(rowIndex, jTable1.getColumnModel().getColumnIndex("Amount"));
+//
+//    double rAmount = Double.parseDouble(JOptionPane.showInputDialog("Enter amount to pay:"));
+//
+//    if (rAmount < billAmount) {
+//    JOptionPane.showMessageDialog(this, "Payment amount must be at least " + billAmount);
+//    return;
+//    }else if (rAmount > billAmount) {
+//    JOptionPane.showMessageDialog(this, "Payment exceeds the bill amount " + billAmount);
+//    return;
+//    }
+//
+//
+//    // get current date
+//    DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+//    Date paymentDate = new Date();
+//
+//    try {
+//    Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/wbill_db", "root", "");
+//    String sql = "INSERT INTO payments (bill_id, r_amount, payment_date) VALUES (?, ?, ?)";
+//    PreparedStatement stmt = con.prepareStatement(sql);
+//    stmt.setInt(1, billId);
+//    stmt.setDouble(2, rAmount);
+//    stmt.setString(3, dateFormat.format(paymentDate));
+//    stmt.executeUpdate();
+//    // update status to paid in billing list
+//    sql = "UPDATE billing_list SET status = 'Paid' WHERE id = ?";
+//    stmt = con.prepareStatement(sql);
+//    stmt.setInt(1, billId);
+//    stmt.executeUpdate();
+//    populateTable();
+//
+//
+//    JOptionPane.showMessageDialog(this, "Payment successful.");
+//    } catch (SQLException ex) {
+//    JOptionPane.showMessageDialog(this, "Error: " + ex.getMessage());
+//    }        // TODO add your handling code here:
+    }//GEN-LAST:event_pay_billActionPerformed
 
     /**
      * @param args the command line arguments
@@ -428,13 +579,16 @@ private void displayUnpaidAmount() {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel address;
     private javax.swing.JLabel cname;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JTable jTable1;
-    private button.MyButton myButton2;
+    private button.MyButton myButton3;
+    private javax.swing.JButton pay_bill;
+    private javax.swing.JLabel tv_dateCreated;
     private javax.swing.JLabel unpaid;
     // End of variables declaration//GEN-END:variables
 

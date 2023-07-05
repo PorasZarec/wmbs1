@@ -58,6 +58,9 @@ import wbms1.dashboard;
 
 public class invoice extends javax.swing.JFrame {
 
+           SimpleDateFormat date = new SimpleDateFormat("dd");
+                String dateNeeded = date.format(new Date());
+
         /**
      * Creates new form invoice
      */
@@ -72,10 +75,11 @@ public class invoice extends javax.swing.JFrame {
     timer.start();
 
         initComponents();
+        
          Connect();
     update_table();
     showTable();
-    
+    createBillonDate();
                  TableColumn column = null;
         column = table.getColumnModel().getColumn(0); // id
         column.setPreferredWidth(10);
@@ -131,6 +135,81 @@ public class invoice extends javax.swing.JFrame {
         System.out.println("Failed to connect to database.");
     }
 }
+   
+   public void createBillonDate(){
+                if(dateNeeded.equals("10")){
+                    System.out.print("TRUE");
+                    try {
+    Connection con = DriverManager.getConnection("jdbc:mysql://localhost/wbill_db", "root", "");
+    String query = "SELECT * FROM client_list";
+    Statement st = con.createStatement();
+    ResultSet rs = st.executeQuery(query);
+    int confirmed = JOptionPane.showConfirmDialog(null, "Are you sure you want to create bills for all clients?", "Confirmation", JOptionPane.YES_NO_OPTION);
+
+    if (confirmed == JOptionPane.YES_OPTION) {
+        while (rs.next()) {
+            int clientId = rs.getInt("id");
+            String client_id = rs.getString("code");
+            String clientName = rs.getString("code") + " - " + rs.getString("firstname") + " " + rs.getString("lastname");
+
+            // Check if the client has three or more unpaid bills
+            query = "SELECT COUNT(*) AS unpaid_bills_count FROM billing_list WHERE client_id = ? AND status = 'Unpaid'";
+            PreparedStatement pstCheck = con.prepareStatement(query);
+            pstCheck.setInt(1, clientId);
+            ResultSet rsCheck = pstCheck.executeQuery();
+            rsCheck.next();
+            int unpaidBillsCount = rsCheck.getInt("unpaid_bills_count");
+            if (unpaidBillsCount >= 3) {
+                JOptionPane.showMessageDialog(null, clientName + " has three or more unpaid bills. A new bill was not created.");
+            } else {
+                // Set the default value for the amount
+                double amount = 180.0;
+
+                // Set the default value for the status to unpaid
+                String status = "Unpaid";
+
+                // Set the pay date to the first day of the next month
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTime(new Date());
+                calendar.add(Calendar.MONTH, 1);
+                calendar.set(Calendar.DATE, 15);
+                Date payDate = calendar.getTime();
+
+                // Set the due date to the 8th day of the next month
+                calendar.set(Calendar.DATE, 18);
+                Date dueDate = calendar.getTime();
+
+                // Insert the new bill into the billing_list table
+                
+//                client_id
+                query = "INSERT INTO billing_list (client_id, bill_date, pay_date, due_date, amount, status) VALUES (?, ?, ?, ?, ?,?)";
+                PreparedStatement pst = con.prepareStatement(query);
+                pst.setInt(1, clientId);
+                pst.setDate(2, new java.sql.Date(new Date().getTime()));
+                pst.setDate(3, new java.sql.Date(payDate.getTime()));
+                pst.setDate(4, new java.sql.Date(dueDate.getTime()));
+                pst.setDouble(5, amount);
+                pst.setString(6, status);
+                pst.executeUpdate();
+                
+                activityCreateBillIncrement();
+
+              
+            }
+        }
+        JOptionPane.showMessageDialog(null, "Bills have been created for all clients.");
+
+    } else {
+        JOptionPane.showMessageDialog(null, "Bills creation cancelled.");
+    }
+    con.close();
+} catch (SQLException ex) {
+    Logger.getLogger(invoice.class.getName()).log(Level.SEVERE, null, ex);
+}
+                } else {
+                    System.out.print("FALSE");
+                }
+   }
 public void update_table() {
     try {
         String sql = "SELECT b.id, CONCAT(c.code, ' - ', c.firstname, ' ', c.lastname) AS client_name, b.bill_date, p.payment_date, b.status "

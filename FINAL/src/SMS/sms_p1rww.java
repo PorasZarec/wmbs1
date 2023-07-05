@@ -89,18 +89,22 @@ public class sms_p1rww extends javax.swing.JFrame {
                 String selectedOption = (String) jComboBox1.getSelectedItem();
 
                 if (selectedOption.equals("ANNOUNCEMENT")){
-                    btn_send.setEnabled(true);
+                    sms_pa.setEnabled(true);
+                    btn_send.setEnabled(false);
                     textfield.setText(" ");
                     
                 } else if (selectedOption.equals("DISCONNECTION NOTICE")){
+                    sms_pa.setEnabled(false);
                     btn_send.setEnabled(true);
                     cb_Disconnection();
                     
                 } else if (selectedOption.equals("DUE DATE REMINDER")){
+                    sms_pa.setEnabled(false);
                     btn_send.setEnabled(true);
                     cb_DueDate();
                 
                 } else if (selectedOption.equals("FOR NEWLY ADDED CLIENTS")){
+                    sms_pa.setEnabled(false);
                     btn_send.setEnabled(true);
                     cb_GreetingAddClient();
                     
@@ -765,15 +769,18 @@ private void activityClientIncrement() {
     if (port == null || !port.isOpen()) {
         JOptionPane.showMessageDialog(this, "Port is not connected.", "Error", JOptionPane.ERROR_MESSAGE);
         } else {
-                String message = textfield.getText().trim(); // Get the message from the text field and remove leading/trailing whitespace
+                message = textfield.getText().trim(); // Get the message from the text field and remove leading/trailing whitespace
 
             if (message.isEmpty()) {
                 JOptionPane.showMessageDialog(this, "Please enter a message.", "Error", JOptionPane.ERROR_MESSAGE);
+                
             } else {
                 try {
                     // Write the message to the serial port
                     port.getOutputStream().write(message.getBytes());
 
+                    // admin activity method DONT REMOVE
+                     activityClientIncrement();
                     JOptionPane.showMessageDialog(this, "Message Sent!");
                 } catch (Exception ex) {
                     JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
